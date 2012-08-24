@@ -9,11 +9,48 @@
   <script type="text/javascript" src="javascript/libs/ejs.js"></script>
   <script type="text/javascript" src="/browserify.js"></script>
   <script type="text/javascript" src="javascript/gitgui.js"></script>
-  <link type="text/css" rel="stylesheet" href="css/ui-lightness/jquery-ui-1.8.23.custom.css"/>
+  <link type="text/css" rel="stylesheet" href="css/smoothness/jquery-ui-1.8.23.custom.css"/>
   <link type="text/css" rel="stylesheet" href="css/layout/layout.css"/>
+  <link type="text/css" rel="stylesheet" href="css/dataTable/header.ccss"/>
+  <link type="text/css" rel="stylesheet" href="css/dataTable/dataTable.css"/>
 </head>
 <body>
-<div class="ui-layout-center">Center</div>
+<div class="ui-layout-center">
+  <table cellpadding="0" cellspacing="0" border="0" class="display" id="gitLog" width="100%">
+    <thead>
+    <tr>
+      <th>Graph</th>
+      <th>Description</th>
+      <th>Date</th>
+      <th>Author</th>
+      <th>Commit</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td>z</td>
+      <td>Merge 1</td>
+      <td>8/24/2012 11:50 AM</td>
+      <td>Joe Ferner &lt;joe@fernsroth.com&gt;</td>
+      <td>1890273jksdfa234sdf</td>
+    </tr>
+    <tr>
+      <td>z</td>
+      <td>Merge 2</td>
+      <td>8/24/2012 11:50 AM</td>
+      <td>Joe Ferner &lt;joe@fernsroth.com&gt;</td>
+      <td>1890273jksdfa234sdf</td>
+    </tr>
+    <tr>
+      <td>z</td>
+      <td>Merge 3</td>
+      <td>8/24/2012 11:50 AM</td>
+      <td>Joe Ferner &lt;joe@fernsroth.com&gt;</td>
+      <td>1890273jksdfa234sdf</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
 <div class="ui-layout-north">North</div>
 <div class="ui-layout-west">
   <div id="mainTree">

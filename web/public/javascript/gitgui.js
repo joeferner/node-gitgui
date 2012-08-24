@@ -34,4 +34,14 @@ $(function () {
       url: '/css/jstree/default/style.css'
     }
   });
+
+  $('#gitLog').dataTable({
+    bJQueryUI: true,
+    sPaginationType: "full_numbers",
+    bFilter: false,
+    bInfo: false,
+    bLengthChange: false,
+    bPaginate: false
+  });
+  $('#gitLog_wrapper .fg-toolbar').hide();
 });
