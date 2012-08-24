@@ -15,6 +15,8 @@ module.exports = function (gitRepo, gitLog, mainTree) {
       hideTogglerOnSlide: true
     },
     north: {
+      minSize: 93,
+      maxSize: 93,
       spacing_open: 1,
       togglerLength_open: 0,
       togglerLength_closed: -1,
