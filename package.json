@@ -1,0 +1,23 @@
+{
+  "name": "gitgui",
+  "version": "0.0.1",
+  "description": "Git GUI written in node.js",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": "",
+  "keywords": [
+    "git",
+    "gui"
+  ],
+  "author": "Joe Ferner",
+  "license": "MIT",
+  "dependencies": {
+    "express": "~3.0.0rc3",
+    "optimist": "~0.3.4",
+    "sf": "~0.1.4",
+    "ejs": "~0.8.2",
+    "browserify": "~1.15.3"
+  }
+}
