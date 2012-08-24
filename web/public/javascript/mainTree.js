@@ -20,8 +20,10 @@ function MainTree(gitRepo) {
   this.jstree = jQuery.jstree._reference(this.tree);
 }
 
-MainTree.prototype.refresh = function () {
+MainTree.prototype.refresh = function (callback) {
+  callback = callback || function () {};
   this.jstree.refresh(-1);
+  return callback(); // TODO: wait for refresh
 };
 
 MainTree.prototype.getTreeData = function (node, callback) {
@@ -63,7 +65,10 @@ MainTree.prototype.loadRoot = function (node, callback) {
 
 MainTree.prototype.loadBranches = function (node, callback) {
   var self = this;
-  $.getJSON(this.gitRepo.createUrl('/branches.json'), function (branches, textStatus) {
+  this.gitRepo.getBranches(function (err, branches) {
+    if (err) {
+      return showError(err);
+    }
     var branchNodes = branches.map(toTreeNode);
     return callback(branchNodes)
   });
@@ -78,7 +83,10 @@ MainTree.prototype.loadBranches = function (node, callback) {
 
 MainTree.prototype.loadTags = function (node, callback) {
   var self = this;
-  $.getJSON(this.gitRepo.createUrl('/tags.json'), function (tags, textStatus) {
+  this.gitRepo.getTags(function (err, tags) {
+    if (err) {
+      return showError(err);
+    }
     var tagNodes = tags.map(toTreeNode);
     return callback(tagNodes)
   });

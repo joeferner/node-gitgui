@@ -23,13 +23,18 @@ function GitLog(gitRepo) {
   this.refresh();
 }
 
-GitLog.prototype.refresh = function () {
+GitLog.prototype.refresh = function (callback) {
   var self = this;
+  callback = callback || function () {};
   this.dataTable.fnClearTable();
 
-  $.getJSON(this.gitRepo.createUrl('/log.json'), function (log, textStatus) {
+  this.gitRepo.getLog(function (err, log) {
+    if (err) {
+      return callback(err);
+    }
     var logRows = log.map(toTableRow);
     self.dataTable.fnAddData(logRows);
+    return callback();
   });
 
   function toTableRow(log) {

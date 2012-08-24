@@ -1,6 +1,17 @@
 'use strict';
 
+var async = require('async');
+
 module.exports = function (gitRepo, gitLog, mainTree) {
+  return new Layout(gitRepo, gitLog, mainTree);
+};
+
+function Layout(gitRepo, gitLog, mainTree) {
+  var self = this;
+  this.gitRepo = gitRepo;
+  this.gitLog = gitLog;
+  this.mainTree = mainTree;
+
   $('body').layout({
     applyDefaultStyles: false,
     fxName: "slide",
@@ -48,7 +59,38 @@ module.exports = function (gitRepo, gitLog, mainTree) {
   $().Ribbon();
 
   $('#toolbarRefresh').click(function () {
-    mainTree.refresh();
-    gitLog.refresh();
+    self.refresh();
   });
+  $('#toolbarFetch').click(function () {
+    self.gitRepo.fetch(function (err) {
+      if (err) {
+        return showError(err);
+      }
+      self.refresh(showError);
+    });
+  });
+  $('#toolbarPull').click(function () {
+    self.gitRepo.pull(function (err) {
+      if (err) {
+        return showError(err);
+      }
+      self.refresh(showError);
+    });
+  });
+  $('#toolbarPush').click(function () {
+    self.gitRepo.push(function (err) {
+      if (err) {
+        return showError(err);
+      }
+      self.refresh(showError);
+    });
+  });
+}
+
+Layout.prototype.refresh = function (callback) {
+  callback = callback || function () {};
+  async.parallel([
+    this.mainTree.refresh.bind(this.mainTree),
+    this.gitLog.refresh.bind(this.gitLog)
+  ], callback);
 };

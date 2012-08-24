@@ -1,5 +1,11 @@
 'use strict';
 
+function showError(err) {
+  if (err) {
+    alert(err);
+  }
+}
+
 $(function () {
   var gitRepo = require('../web/public/javascript/gitRepo')();
   var gitLog = require('../web/public/javascript/gitLog')(gitRepo);
