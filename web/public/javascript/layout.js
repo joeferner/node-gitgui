@@ -7,6 +7,7 @@ module.exports = function (gitRepo, gitLog, mainTree) {
     fxSettings_open: { easing: "easeInQuint" },
     fxSettings_close: { easing: "easeOutQuint" },
     north__fxName: "none",
+    center__paneSelector: ".outer-center",
     defaults: {
       paneClass: "pane",
       resizerClass: "resizer",
@@ -26,6 +27,21 @@ module.exports = function (gitRepo, gitLog, mainTree) {
     west: {
       togglerAlign_closed: "top",
       togglerLength_open: 0
+    },
+    center__childOptions: {
+      defaults: {
+        paneClass: "pane",
+        resizerClass: "resizer",
+        togglerClass: "toggler",
+        buttonClass: "button",
+        hideTogglerOnSlide: true
+      },
+      south: {
+        togglerAlign_closed: "left",
+        togglerLength_open: 0
+      },
+      center__paneSelector: ".middle-center",
+      south__paneSelector: ".middle-south"
     }
   });
 
@@ -33,5 +49,6 @@ module.exports = function (gitRepo, gitLog, mainTree) {
 
   $('#toolbarRefresh').click(function () {
     mainTree.refresh();
+    gitLog.refresh();
   });
 };

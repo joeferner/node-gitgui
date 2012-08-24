@@ -158,6 +158,8 @@ td {
 /* north-pane is not resizable
 .resizer-north-dragging ,
 .resizer-north:hover		{ background: url(../img/resizable-n.gif) repeat-x center; }*/
+.resizer-north-dragging,
+.resizer-north:hover,
 .resizer-south-dragging,
 .resizer-south:hover {
   background: url(./images/resizable-s.gif) repeat-x center;
@@ -174,14 +176,18 @@ td {
 }
 
 .resizer-west-open,
-.resizer-east-open {
+.resizer-east-open,
+.resizer-north-open,
+.resizer-south-open {
   background-color: #999;
   opacity: 0.1;
   filter: alpha(opacity = 10);
 }
 
 .resizer-west-open:hover,
-.resizer-east-open:hover {
+.resizer-east-open:hover,
+.resizer-north-open:hover,
+.resizer-south-open:hover {
   opacity: 1;
   filter: alpha(opacity = 100);
 }
