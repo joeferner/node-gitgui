@@ -27,6 +27,8 @@ module.exports = function (gitRepo, gitLog, mainTree) {
     }
   });
 
+  $().Ribbon();
+
   $('#toolbarRefresh').click(function () {
     mainTree.refresh();
   });

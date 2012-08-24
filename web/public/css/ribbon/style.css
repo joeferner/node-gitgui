@@ -1,0 +1,70 @@
+﻿html
+{
+	overflow-x: hidden;
+	height: 100%;
+}
+
+body
+{
+    font-family: Calibri, Arial, Trebuchet MS;
+    font-size: 11pt;
+    padding: 0px;
+    margin: 0px;
+    color: #254264;
+    background-color: #DCE5F2;
+    background-image: url(images/background.png);
+    background-repeat: repeat-x;
+}
+
+h1
+{
+	font-family: Cambria, Arial, Trebuchet MS;
+	font-size: 14pt;
+}
+
+h2
+{
+	font-family: Cambria, Arial, Trebuchet MS;
+	font-size: 13pt;
+	color: #4E81C8;
+}
+
+img
+{
+    border: 0px;
+}
+
+a
+{
+    color: #254264;
+    text-decoration: underline;
+}
+
+a:hover
+{
+    text-decoration: none;
+}
+
+.mainContainer
+{
+    width: 100%;
+    background-color: #d9e4f3;
+    border: 1px solid #3b5a82;
+    border-bottom: 0px;
+}
+
+.textbox
+{
+	background-image: url(images/textboxbg.png);
+	background-repeat: repeat-y;
+	width: 809px;
+	margin: 0px auto;
+}
+
+.textbox div
+{
+	width: 740px;
+	margin: 0px auto;
+	padding: 20px;
+	overflow: hidden;
+}

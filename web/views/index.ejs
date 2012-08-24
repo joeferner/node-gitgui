@@ -6,6 +6,7 @@
   <script type="text/javascript" src="javascript/libs/jquery.layout.js"></script>
   <script type="text/javascript" src="javascript/libs/jquery.dataTables.js"></script>
   <script type="text/javascript" src="javascript/libs/jquery.jstree.js"></script>
+  <script type="text/javascript" src="javascript/libs/jquery.ribbon.js"></script>
   <script type="text/javascript" src="javascript/libs/ejs.js"></script>
   <script type="text/javascript" src="/browserify.js"></script>
   <script type="text/javascript" src="javascript/gitgui.js"></script>
@@ -13,14 +14,29 @@
   <link type="text/css" rel="stylesheet" href="css/layout/layout.css"/>
   <link type="text/css" rel="stylesheet" href="css/dataTable/header.ccss"/>
   <link type="text/css" rel="stylesheet" href="css/dataTable/dataTable.css"/>
+  <link type="text/css" rel="stylesheet" href="css/ribbon/style.css"/>
 </head>
 <body>
 <div class="ui-layout-north">
-  <div class="toolbar">
-    <a class="toolbar-item" id="toolbarRefresh">
-      Refresh
-    </a>
-  </div>
+  <ul class="ribbon" id="ribbon">
+    <li>
+      <ul class="menu">
+        <li><a href="#home" accesskey="2">Home</a>
+          <ul>
+            <li>
+              <h2>
+                <span>Actions</span></h2>
+
+              <div id="toolbarRefresh">
+                <img src="/image/icon_refresh.png" alt="Refresh"/>
+                Refresh
+              </div>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
 </div>
 <div class="ui-layout-center">
   <table cellpadding="0" cellspacing="0" border="0" class="display" id="gitLog" width="100%">
