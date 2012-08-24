@@ -48,7 +48,7 @@ MainTree.prototype.loadRoot = function (node, callback) {
   setTimeout(function () {
     self.jstree.open_node($('#mainTreeBranches'), null, true);
     self.jstree.open_node($('#mainTreeTags'), null, true);
-  }, 100);
+  }, 500);
   return callback([
     {
       attr: { id: "mainTreeBranches" },
