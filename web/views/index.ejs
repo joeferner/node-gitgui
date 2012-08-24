@@ -15,6 +15,13 @@
   <link type="text/css" rel="stylesheet" href="css/dataTable/dataTable.css"/>
 </head>
 <body>
+<div class="ui-layout-north">
+  <div class="toolbar">
+    <a class="toolbar-item" id="toolbarRefresh">
+      Refresh
+    </a>
+  </div>
+</div>
 <div class="ui-layout-center">
   <table cellpadding="0" cellspacing="0" border="0" class="display" id="gitLog" width="100%">
     <thead>
@@ -51,23 +58,14 @@
     </tbody>
   </table>
 </div>
-<div class="ui-layout-north">North</div>
 <div class="ui-layout-west">
   <div id="mainTree">
     <ul>
-      <li id="phtml_1">
-        <a href="#">Root node 1</a>
-        <ul>
-          <li id="phtml_2">
-            <a href="#">Child node 1</a>
-          </li>
-          <li id="phtml_3">
-            <a href="#">Child node 2</a>
-          </li>
-        </ul>
+      <li id="mainTreeBranches">
+        <a href="#">Branches</a>
       </li>
-      <li id="phtml_4">
-        <a href="#">Root node 2</a>
+      <li id="mainTreeTags">
+        <a href="#">Tags</a>
       </li>
     </ul>
   </div>

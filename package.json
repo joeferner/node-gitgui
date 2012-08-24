@@ -18,6 +18,7 @@
     "optimist": "~0.3.4",
     "sf": "~0.1.4",
     "ejs": "~0.8.2",
-    "browserify": "~1.15.3"
+    "browserify": "~1.15.3",
+    "nodegit": "0.0.6"
   }
 }
