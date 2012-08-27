@@ -58,7 +58,6 @@ GitRepo.prototype.getDiff = function (id, filename, callback) {
   id = id || 'workingCopy';
   filename = encodeURIComponent(filename);
   $.get(this.createUrl('/commit/' + id + '/' + filename),function (diff, textStatus) {
-    console.log(diff);
     return callback(null, diff);
   }).error(ajaxError.bind(null, 'getDiff'));
 };

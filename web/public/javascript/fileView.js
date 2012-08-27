@@ -75,6 +75,8 @@ FileView.prototype.refresh = function (callback) {
         row: $(this)
       });
     });
+
+    $("#fileView tbody tr").first().click();
   });
 
   function toTableRow(fileInfo) {
