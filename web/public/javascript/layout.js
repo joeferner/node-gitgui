@@ -45,12 +45,16 @@ function Layout(gitRepo, gitLog, mainTree) {
       defaults: defaults,
       south: {
         togglerAlign_closed: "left",
-        togglerLength_open: 0
+        togglerLength_open: 0,
+        size: 200
       },
       center__paneSelector: ".middle-center",
       south__paneSelector: ".middle-south",
       south__childOptions: {
         defaults: defaults,
+        west: {
+          size: 400
+        },
         west__paneSelector: ".middle-south-west",
         center__paneSelector: ".middle-south-center"
       }

@@ -21,5 +21,6 @@ $(function () {
   var gitLog = require('../web/public/javascript/gitLog')(gitRepo);
   var mainTree = require('../web/public/javascript/mainTree')(gitRepo);
   var fileView = require('../web/public/javascript/fileView')(gitRepo, gitLog);
+  var diffView = require('../web/public/javascript/diffView')(gitRepo, fileView);
   require('../web/public/javascript/layout')(gitRepo, gitLog, mainTree);
 });
