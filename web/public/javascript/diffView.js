@@ -29,7 +29,7 @@ DiffView.prototype.refresh = function (callback) {
     var parsedDiff = diffParse(diff);
     if (parsedDiff && parsedDiff.length === 1) {
       var lines = parsedDiff[0].lines;
-      var html = '<table class="diff" cellpadding="0" cellspacing="0">';
+      var html = '<table class="diff" cellpadding="0" cellspacing="0" width="100%">';
       lines.forEach(function (l) {
         var addSubtractCss;
         if (l.action === '+') {

@@ -62,6 +62,20 @@ GitRepo.prototype.getDiff = function (id, filename, callback) {
   }).error(ajaxError.bind(null, 'getDiff'));
 };
 
+GitRepo.prototype.stage = function (filename, callback) {
+  filename = encodeURIComponent(filename);
+  $.post(this.createUrl('/git/stage/' + filename),function (data, textStatus) {
+    return callback(null, data);
+  }).error(ajaxError.bind(null, 'stage'));
+};
+
+GitRepo.prototype.reset = function (filename, callback) {
+  filename = encodeURIComponent(filename);
+  $.post(this.createUrl('/git/reset/' + filename),function (data, textStatus) {
+    return callback(null, data);
+  }).error(ajaxError.bind(null, 'reset'));
+};
+
 function ajaxError(cmd, response) {
   showError(response.responseText);
 }

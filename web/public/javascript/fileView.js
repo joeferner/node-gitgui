@@ -40,7 +40,8 @@ FileView.prototype.getSelectedFilename = function () {
   }
   return {
     action: data[0],
-    filename: data[1]
+    staged: data[1],
+    filename: data[2]
   };
 };
 
@@ -60,7 +61,7 @@ FileView.prototype.refresh = function (callback) {
     commitInfoHtml += '<div class="commitInfo-field"><span class="commitInfo-fieldTitle">ID:</span> ' + (commitInfo.id || 'Working Copy') + '</div>';
     if (commitInfo.id) {
       var dateStr = '';
-      if(commitInfo.committerDate) {
+      if (commitInfo.committerDate) {
         dateStr = new Date(commitInfo.committerDate);
       }
       commitInfoHtml += '<div class="commitInfo-field"><span class="commitInfo-fieldTitle">Committer:</span> ' + escapeHtml(commitInfo.committer || '') + '</div>';
@@ -70,6 +71,11 @@ FileView.prototype.refresh = function (callback) {
     $('#commitInfo').html(commitInfoHtml);
 
     var fileRows = commitInfo.files.map(toTableRow);
+    if (row.id) {
+      self.filesTable.fnSetColumnVis(1, false);
+    } else {
+      self.filesTable.fnSetColumnVis(1, true);
+    }
     self.filesTable.fnAddData(fileRows);
 
     $("#fileView tbody tr").click(function (e) {
@@ -79,11 +85,24 @@ FileView.prototype.refresh = function (callback) {
         row: $(this)
       });
     });
+    if (!row.id) {
+      $("#fileView tbody tr").dblclick(function (e) {
+        var data = self.filesTable.fnGetData(this);
+        var filename = data[2];
+        var fnName = data[1] === 'Y' ? 'reset' : 'stage';
+        self.gitRepo[fnName](filename, function (err) {
+          if (err) {
+            return showError(err);
+          }
+          self.refresh();
+        });
+      });
+    }
 
     $("#fileView tbody tr").first().click();
   });
 
   function toTableRow(fileInfo) {
-    return [fileInfo.action, fileInfo.filename];
+    return [fileInfo.action, fileInfo.staged ? 'Y' : 'N', fileInfo.filename];
   }
 };
