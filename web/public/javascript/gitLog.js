@@ -39,12 +39,18 @@ GitLog.prototype.refresh = function (callback) {
 
   function toTableRow(log) {
     log.message = log.message.replace(/\n/g, ' ');
-    var dateStr = sf('{0:G}', new Date(log.commitDate));
-    return ['', escapeHtml(log.message), dateStr, escapeHtml(log.commit), log.id];
+    var dateStr;
+    if (log.committerDate) {
+      dateStr = sf('{0:G}', new Date(log.committerDate));
+    }
+    return ['', escapeHtml(log.message), dateStr || '', escapeHtml(log.committer) || '', log.id || ''];
   }
 };
 
 function escapeHtml(str) {
+  if (!str) {
+    return str;
+  }
   return str
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
