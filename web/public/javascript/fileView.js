@@ -59,8 +59,12 @@ FileView.prototype.refresh = function (callback) {
     var commitInfoHtml = '';
     commitInfoHtml += '<div class="commitInfo-field"><span class="commitInfo-fieldTitle">ID:</span> ' + (commitInfo.id || 'Working Copy') + '</div>';
     if (commitInfo.id) {
+      var dateStr = '';
+      if(commitInfo.committerDate) {
+        dateStr = new Date(commitInfo.committerDate);
+      }
       commitInfoHtml += '<div class="commitInfo-field"><span class="commitInfo-fieldTitle">Committer:</span> ' + escapeHtml(commitInfo.committer || '') + '</div>';
-      commitInfoHtml += '<div class="commitInfo-field"><span class="commitInfo-fieldTitle">Date:</span> ' + (commitInfo.commiterDate || '') + '</div>';
+      commitInfoHtml += '<div class="commitInfo-field"><span class="commitInfo-fieldTitle">Date:</span> ' + dateStr + '</div>';
     }
     commitInfoHtml += '<div class="commitInfo-field"><span class="commitInfo-fieldTitle">Message:</span><div class="commitInfo-message">' + commitInfo.message + '</div></div>';
     $('#commitInfo').html(commitInfoHtml);
