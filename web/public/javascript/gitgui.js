@@ -6,6 +6,10 @@ function showError(err) {
   }
 }
 
+function showMessage(message) {
+  alert(message);
+}
+
 function escapeHtml(str) {
   if (!str) {
     return str;

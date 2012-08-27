@@ -76,6 +76,15 @@ GitRepo.prototype.reset = function (filename, callback) {
   }).error(ajaxError.bind(null, 'reset'));
 };
 
+GitRepo.prototype.commit = function (message, callback) {
+  var data = {
+    message: message
+  };
+  $.post(this.createUrl('/commit'), data,function (data, textStatus) {
+    return callback(null, data);
+  }).error(ajaxError.bind(null, 'commit'));
+};
+
 function ajaxError(cmd, response) {
   showError(response.responseText);
 }

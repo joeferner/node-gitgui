@@ -36,3 +36,7 @@
 .diff-noChange .diff-toLineNumber {
   background-color: rgb(234, 234, 234);
 }
+
+.dialog-field-title {
+  font-weight: bold;
+}

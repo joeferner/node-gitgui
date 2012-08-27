@@ -63,34 +63,79 @@ function Layout(gitRepo, gitLog, mainTree) {
 
   $().Ribbon();
 
-  $('#toolbarRefresh').click(function () {
-    self.refresh();
-  });
-  $('#toolbarFetch').click(function () {
-    self.gitRepo.fetch(function (err) {
-      if (err) {
-        return showError(err);
-      }
-      self.refresh(showError);
-    });
-  });
-  $('#toolbarPull').click(function () {
-    self.gitRepo.pull(function (err) {
-      if (err) {
-        return showError(err);
-      }
-      self.refresh(showError);
-    });
-  });
-  $('#toolbarPush').click(function () {
-    self.gitRepo.push(function (err) {
-      if (err) {
-        return showError(err);
-      }
-      self.refresh(showError);
-    });
+  $('#toolbarRefresh').click(this.actionRefresh.bind(this));
+  $('#toolbarCommit').click(this.localCommit.bind(this));
+  $('#toolbarFetch').click(this.remoteFetch.bind(this));
+  $('#toolbarPull').click(this.remotePull.bind(this));
+  $('#toolbarPush').click(this.remotePush.bind(this));
+
+  $('#commitDialog').dialog({
+    autoOpen: false,
+    modal: true,
+    height: 'auto',
+    width: 'auto',
+    buttons: {
+      "Cancel": function () {
+        $('#commitDialog').dialog('close');
+      },
+      "OK": this.localCommitDo.bind(this)
+    }
   });
 }
+
+Layout.prototype.actionRefresh = function () {
+  var self = this;
+  self.refresh();
+};
+
+Layout.prototype.localCommit = function () {
+  $('#commitDialog').dialog('open');
+};
+
+Layout.prototype.localCommitDo = function () {
+  var self = this;
+  var commitMessage = $('#commitDialogMessage').val();
+  if (!commitMessage) {
+    return showMessage('You must specify a message.');
+  }
+  self.gitRepo.commit(commitMessage, function (err) {
+    if (err) {
+      return showError(err);
+    }
+    self.refresh(showError);
+    $('#commitDialog').dialog('close');
+  });
+};
+
+Layout.prototype.remoteFetch = function () {
+  var self = this;
+  self.gitRepo.fetch(function (err) {
+    if (err) {
+      return showError(err);
+    }
+    self.refresh(showError);
+  });
+};
+
+Layout.prototype.remotePull = function () {
+  var self = this;
+  self.gitRepo.pull(function (err) {
+    if (err) {
+      return showError(err);
+    }
+    self.refresh(showError);
+  });
+};
+
+Layout.prototype.remotePush = function () {
+  var self = this;
+  self.gitRepo.push(function (err) {
+    if (err) {
+      return showError(err);
+    }
+    self.refresh(showError);
+  });
+};
 
 Layout.prototype.refresh = function (callback) {
   callback = callback || function () {};

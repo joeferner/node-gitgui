@@ -36,7 +36,17 @@
             </li>
             <li>
               <h2>
-                <span>Git</span>
+                <span>Local</span>
+              </h2>
+
+              <div id="toolbarCommit">
+                <img src="/image/dialog-apply.png" alt="Commit"/>
+                Commit
+              </div>
+            </li>
+            <li>
+              <h2>
+                <span>Remote</span>
               </h2>
 
               <div id="toolbarFetch">
@@ -115,5 +125,16 @@
     </ul>
   </div>
 </div>
+
+<!-- commit dialog -->
+<div id="commitDialog" title="Commit" style="display: none;">
+  <div class="dialog-field">
+    <div class="dialog-field-title">Commit Message:</div>
+    <div class="dialog-field-value">
+      <textarea id="commitDialogMessage" style="width: 600px; height: 200px;"></textarea>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
