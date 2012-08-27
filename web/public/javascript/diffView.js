@@ -21,5 +21,11 @@ DiffView.prototype.refresh = function (callback) {
   callback = callback || showError;
   var commitId = this.fileView.commitId;
   var row = this.fileView.getSelectedFilename();
-  console.log(commitId, row);
+  this.gitRepo.getDiff(commitId, row.filename, function (err, diff) {
+    if (err) {
+      return callback(err);
+    }
+    $('#diff').html('<pre>' + escapeHtml(diff) + '</pre>');
+    return callback();
+  });
 };

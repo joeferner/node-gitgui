@@ -54,6 +54,14 @@ GitRepo.prototype.getCommitInfo = function (id, callback) {
   }).error(ajaxError.bind(null, 'getCommitInfo'));
 };
 
+GitRepo.prototype.getDiff = function (id, filename, callback) {
+  filename = encodeURIComponent(filename);
+  $.get(this.createUrl('/commit/' + id + '/' + filename),function (diff, textStatus) {
+    console.log(diff);
+    return callback(null, diff);
+  }).error(ajaxError.bind(null, 'getDiff'));
+};
+
 function ajaxError(cmd, response) {
   showError(response.responseText);
 }
