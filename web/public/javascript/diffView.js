@@ -22,33 +22,44 @@ DiffView.prototype.refresh = function (callback) {
   callback = callback || showError;
   var commitId = this.fileView.commitId;
   var row = this.fileView.getSelectedFilename();
-  this.gitRepo.getDiff(commitId, row.filename, function (err, diff) {
-    if (err) {
-      return callback(err);
-    }
-    var parsedDiff = diffParse(diff);
-    if (parsedDiff && parsedDiff.length === 1) {
-      var lines = parsedDiff[0].lines;
-      var html = '<table class="diff" cellpadding="0" cellspacing="0" width="100%">';
-      lines.forEach(function (l) {
-        var addSubtractCss;
-        if (l.action === '+') {
-          addSubtractCss = 'diff-add';
-        } else if (l.action === '-') {
-          addSubtractCss = 'diff-subtract';
-        } else {
-          addSubtractCss = 'diff-noChange';
-        }
-        var lineStr = formatLine(l.line);
-        html += sf('<tr class="{0}"><td class="diff-fromLineNumber">{1}</td><td class="diff-toLineNumber">{2}</td><td class="diff-line">{3}</td></tr>', addSubtractCss, l.fromLineNumber, l.toLineNumber, lineStr);
-      });
-      html += '</table>';
-      $('#diff').html(html);
-    } else {
-      $('#diff').html('');
-    }
+
+  if (isImageFilename(row.filename)) {
+    var fname = encodeURIComponent(row.filename);
+    $('#diff').html(sf('<img src="/raw/{0}/{1}" />', commitId, fname));
     return callback();
-  });
+  } else {
+    this.gitRepo.getDiff(commitId, row.filename, function (err, diff) {
+      if (err) {
+        return callback(err);
+      }
+      var parsedDiff = diffParse(diff);
+      if (parsedDiff && parsedDiff.length === 1) {
+        var lines = parsedDiff[0].lines;
+        var html = '<table class="diff" cellpadding="0" cellspacing="0" width="100%">';
+        lines.forEach(function (l) {
+          var addSubtractCss;
+          if (l.action === '+') {
+            addSubtractCss = 'diff-add';
+          } else if (l.action === '-') {
+            addSubtractCss = 'diff-subtract';
+          } else {
+            addSubtractCss = 'diff-noChange';
+          }
+          var lineStr = formatLine(l.line);
+          html += sf('<tr class="{0}"><td class="diff-fromLineNumber">{1}</td><td class="diff-toLineNumber">{2}</td><td class="diff-line">{3}</td></tr>', addSubtractCss, l.fromLineNumber, l.toLineNumber, lineStr);
+        });
+        html += '</table>';
+        $('#diff').html(html);
+      } else {
+        $('#diff').html('');
+      }
+      return callback();
+    });
+  }
+
+  function isImageFilename(filename) {
+    return filename.match(/\.jpg$/) || filename.match(/\.png$/) || filename.match(/\.jpeg$/) || filename.match(/\.gif$/);
+  }
 
   function formatLine(line) {
     var lineMatch = line.match(/^(\s*)(.*)$/);

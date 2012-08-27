@@ -52,7 +52,6 @@ FileView.prototype.refresh = function (callback) {
   this.filesTable.fnClearTable();
 
   this.commitId = row.id;
-
   this.gitRepo.getCommitInfo(row.id || 'workingCopy', function (err, commitInfo) {
     if (err) {
       return callback(err);
