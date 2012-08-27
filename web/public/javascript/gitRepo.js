@@ -13,19 +13,19 @@ GitRepo.prototype.createUrl = function (url) {
 };
 
 GitRepo.prototype.getLog = function (callback) {
-  $.getJSON(this.createUrl('/log.json'), function (log, textStatus) {
+  $.getJSON(this.createUrl('/log.json'),function (log, textStatus) {
     return callback(null, log);
   }).error(ajaxError.bind(null, 'log'));
 };
 
 GitRepo.prototype.getTags = function (callback) {
-  $.getJSON(this.createUrl('/tags.json'), function (tags, textStatus) {
+  $.getJSON(this.createUrl('/tags.json'),function (tags, textStatus) {
     return callback(null, tags);
   }).error(ajaxError.bind(null, 'tags'));
 };
 
 GitRepo.prototype.getBranches = function (callback) {
-  $.getJSON(this.createUrl('/branches.json'), function (branches, textStatus) {
+  $.getJSON(this.createUrl('/branches.json'),function (branches, textStatus) {
     return callback(null, branches);
   }).error(ajaxError.bind(null, 'branches'));
 };
@@ -37,15 +37,21 @@ GitRepo.prototype.fetch = function (callback) {
 };
 
 GitRepo.prototype.pull = function (callback) {
-  $.post(this.createUrl('/git/pull'), function (data, textStatus) {
+  $.post(this.createUrl('/git/pull'),function (data, textStatus) {
     return callback(null, data);
   }).error(ajaxError.bind(null, 'pull'));
 };
 
 GitRepo.prototype.push = function (callback) {
-  $.post(this.createUrl('/git/push'), function (data, textStatus) {
+  $.post(this.createUrl('/git/push'),function (data, textStatus) {
     return callback(null, data);
   }).error(ajaxError.bind(null, 'push'));
+};
+
+GitRepo.prototype.getCommitInfo = function (id, callback) {
+  $.getJSON(this.createUrl('/commit/' + id + '.json'),function (commitInfo, textStatus) {
+    return callback(null, commitInfo);
+  }).error(ajaxError.bind(null, 'getCommitInfo'));
 };
 
 function ajaxError(cmd, response) {

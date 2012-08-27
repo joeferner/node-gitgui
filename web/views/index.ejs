@@ -59,6 +59,7 @@
   </ul>
 </div>
 <div class="outer-center">
+  <!-- GitLog -->
   <div class="middle-center">
     <table cellpadding="0" cellspacing="0" border="0" class="display" id="gitLog" width="100%">
       <thead>
@@ -67,15 +68,38 @@
         <th>Description</th>
         <th>Date</th>
         <th>Author</th>
-        <th>Commit</th>
+        <th>ID</th>
       </tr>
       </thead>
       <tbody>
       </tbody>
     </table>
   </div>
-  <div class="middle-south">Middle South</div>
+
+  <!-- FileView and Diff -->
+  <div class="middle-south">
+    <div class="middle-south-west">
+      <div id="commitInfo">
+        Select a commit from the log to view.
+      </div>
+      <table cellpadding="0" cellspacing="0" border="0" class="display" id="fileView" width="100%">
+        <thead>
+        <tr>
+          <th>Status</th>
+          <th>Filename</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
+    </div>
+    <div class="middle-south-center">
+      East
+    </div>
+  </div>
 </div>
+
+<!-- MainTree -->
 <div class="ui-layout-west">
   <div id="mainTree">
     <ul>

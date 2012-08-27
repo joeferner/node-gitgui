@@ -2,3 +2,20 @@
   overflow: hidden !important;
   border: 0 !important;
 }
+
+#gitLog tbody tr {
+  cursor: pointer;
+}
+
+.commitInfo-fieldTitle {
+  font-weight: bold;
+}
+
+.commitInfo-message {
+  margin-left: 10px;
+  margin-bottom: 10px;
+}
+
+#fileView tbody tr {
+  cursor: pointer;
+}

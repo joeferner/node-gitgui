@@ -1,12 +1,15 @@
 'use strict';
 
 var sf = require('sf');
+var util = require("util");
+var events = require("events");
 
 module.exports = function (gitRepo) {
   return new GitLog(gitRepo);
 };
 
 function GitLog(gitRepo) {
+  events.EventEmitter.call(this);
   this.gitRepo = gitRepo;
   $('#gitLog').dataTable({
     bJQueryUI: true,
@@ -22,10 +25,25 @@ function GitLog(gitRepo) {
 
   this.refresh();
 }
+util.inherits(GitLog, events.EventEmitter);
+
+GitLog.prototype.getSelectedRow = function () {
+  var row = this.dataTable.$('tr.row_selected').get(0);
+  var data = this.dataTable.fnGetData(row);
+  if (!data) {
+    return null;
+  }
+  return {
+    message: data[1],
+    committerDate: new Date(data[2]),
+    committer: data[3],
+    id: data[4]
+  };
+};
 
 GitLog.prototype.refresh = function (callback) {
   var self = this;
-  callback = callback || function () {};
+  callback = callback || showError;
   this.dataTable.fnClearTable();
 
   this.gitRepo.getLog(function (err, log) {
@@ -34,6 +52,15 @@ GitLog.prototype.refresh = function (callback) {
     }
     var logRows = log.map(toTableRow);
     self.dataTable.fnAddData(logRows);
+
+    $("#gitLog tbody tr").click(function (e) {
+      self.dataTable.$('tr.row_selected').removeClass('row_selected');
+      $(this).addClass('row_selected');
+      self.emit('logRowSelected', {
+        row: $(this)
+      });
+    });
+
     return callback();
   });
 
@@ -46,13 +73,3 @@ GitLog.prototype.refresh = function (callback) {
     return ['', escapeHtml(log.message), dateStr || '', escapeHtml(log.committer) || '', log.id || ''];
   }
 };
-
-function escapeHtml(str) {
-  if (!str) {
-    return str;
-  }
-  return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
-}
