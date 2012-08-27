@@ -19,3 +19,20 @@
 #fileView tbody tr {
   cursor: pointer;
 }
+
+.diff {
+  font-family: monospace;
+}
+
+.diff-add {
+  background-color: rgb(193, 255, 194);
+}
+
+.diff-subtract {
+  background-color: rgb(255, 135, 132);
+}
+
+.diff-noChange .diff-fromLineNumber,
+.diff-noChange .diff-toLineNumber {
+  background-color: rgb(234, 234, 234);
+}

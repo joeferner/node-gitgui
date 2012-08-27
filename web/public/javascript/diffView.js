@@ -1,6 +1,7 @@
 'use strict';
 
 var sf = require('sf');
+var diffParse = require("../lib/diffParse");
 
 module.exports = function (gitRepo, fileView) {
   return new DiffView(gitRepo, fileView);
@@ -25,7 +26,26 @@ DiffView.prototype.refresh = function (callback) {
     if (err) {
       return callback(err);
     }
-    $('#diff').html('<pre>' + escapeHtml(diff) + '</pre>');
+    var parsedDiff = diffParse(diff);
+    if (parsedDiff && parsedDiff.length === 1) {
+      var lines = parsedDiff[0].lines;
+      var html = '<table class="diff" cellpadding="0" cellspacing="0">';
+      lines.forEach(function (l) {
+        var addSubtractCss;
+        if (l.action === '+') {
+          addSubtractCss = 'diff-add';
+        } else if (l.action === '-') {
+          addSubtractCss = 'diff-subtract';
+        } else {
+          addSubtractCss = 'diff-noChange';
+        }
+        html += sf('<tr class="{0}"><td class="diff-fromLineNumber">{1}</td><td class="diff-toLineNumber">{2}</td><td class="diff-line">{3}</td></tr>', addSubtractCss, l.fromLineNumber, l.toLineNumber, escapeHtml(l.line));
+      });
+      html += '</table>';
+      $('#diff').html(html);
+    } else {
+      $('#diff').html('');
+    }
     return callback();
   });
 };
