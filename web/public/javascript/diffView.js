@@ -39,7 +39,8 @@ DiffView.prototype.refresh = function (callback) {
         } else {
           addSubtractCss = 'diff-noChange';
         }
-        html += sf('<tr class="{0}"><td class="diff-fromLineNumber">{1}</td><td class="diff-toLineNumber">{2}</td><td class="diff-line">{3}</td></tr>', addSubtractCss, l.fromLineNumber, l.toLineNumber, escapeHtml(l.line));
+        var lineStr = formatLine(l.line);
+        html += sf('<tr class="{0}"><td class="diff-fromLineNumber">{1}</td><td class="diff-toLineNumber">{2}</td><td class="diff-line">{3}</td></tr>', addSubtractCss, l.fromLineNumber, l.toLineNumber, lineStr);
       });
       html += '</table>';
       $('#diff').html(html);
@@ -48,4 +49,13 @@ DiffView.prototype.refresh = function (callback) {
     }
     return callback();
   });
+
+  function formatLine(line) {
+    var lineMatch = line.match(/^(\s*)(.*)$/);
+    if (!lineMatch) {
+      return escapeHtml(line);
+    } else {
+      return lineMatch[1].replace(/ /g, '&nbsp;').replace(/\t/g, '&nbsp;&nbsp;') + escapeHtml(lineMatch[2]);
+    }
+  }
 };

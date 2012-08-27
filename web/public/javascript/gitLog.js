@@ -61,6 +61,7 @@ GitLog.prototype.refresh = function (callback) {
       });
     });
 
+    $("#gitLog tbody tr").first().click();
     return callback();
   });
 

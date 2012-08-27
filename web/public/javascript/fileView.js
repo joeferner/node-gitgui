@@ -100,6 +100,7 @@ FileView.prototype.refresh = function (callback) {
     }
 
     $("#fileView tbody tr").first().click();
+    return callback();
   });
 
   function toTableRow(fileInfo) {
