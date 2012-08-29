@@ -18,7 +18,14 @@ function GitLog(gitRepo) {
     bInfo: false,
     bLengthChange: false,
     bPaginate: false,
-    bProcessing: true
+    bProcessing: true,
+    aoColumns: [
+      { sClass: 'fileView-column-graph', sWidth: '200px' },
+      { sClass: 'fileView-column-message' },
+      { sClass: 'fileView-column-date', sWidth: '200px' },
+      { sClass: 'fileView-column-committer', sWidth: '200px' },
+      { sClass: 'fileView-column-commitId', sWidth: '100px' }
+    ]
   });
   this.dataTable = $('#gitLog').dataTable();
   $('#gitLog_wrapper .fg-toolbar').hide();
@@ -71,6 +78,14 @@ GitLog.prototype.refresh = function (callback) {
     if (log.committerDate) {
       dateStr = sf('{0:G}', new Date(log.committerDate));
     }
-    return ['', escapeHtml(log.message), dateStr || '', escapeHtml(log.committer) || '', log.id || ''];
+    var message = '';
+    (log.refs || []).forEach(function (ref) {
+      message += sf("<div class='ref'>{name}</div>", ref);
+    });
+    message += escapeHtml(log.message);
+
+    var commitId = (log.id || '');
+
+    return ['', message, dateStr || '', escapeHtml(log.committer) || '', commitId];
   }
 };

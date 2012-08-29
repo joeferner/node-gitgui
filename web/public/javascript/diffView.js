@@ -27,6 +27,9 @@ DiffView.prototype.refresh = function (callback) {
     var fname = encodeURIComponent(row.filename);
     $('#diff').html(sf('<img src="/raw/{0}/{1}" />', commitId, fname));
     return callback();
+  } else if (row.filename.match(/\/$/)) {
+    $('#diff').html('Directory');
+    return callback();
   } else {
     this.gitRepo.getDiff(commitId, row.filename, function (err, diff) {
       if (err) {

@@ -3,6 +3,10 @@
   border: 0 !important;
 }
 
+#gitLog {
+  table-layout: fixed;
+}
+
 #gitLog tbody tr {
   cursor: pointer;
 }
@@ -39,4 +43,22 @@
 
 .dialog-field-title {
   font-weight: bold;
+}
+
+.ref {
+  display: inline-block;
+  background-color: rgb(255, 251, 181);
+  padding: 2px;
+  border-radius: 5px;
+  border: 1px solid rgb(204, 200, 136);
+}
+
+.fileView-column-graph,
+.fileView-column-message,
+.fileView-column-date,
+.fileView-column-committer,
+.fileView-column-commitId {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
