@@ -82,6 +82,8 @@ function Layout(gitRepo, gitLog, mainTree) {
       "Commit And Push": this.localCommitAndPushDo.bind(this)
     }
   });
+
+  setInterval(this.refreshStatus.bind(this), 1000);
 }
 
 Layout.prototype.actionRefresh = function () {
@@ -157,6 +159,42 @@ Layout.prototype.remotePush = function () {
     self.refresh(showError);
   });
 };
+
+Layout.prototype.refreshStatus = function () {
+  this.gitRepo.getStatus(function (err, status) {
+    positionCount('#toolbarPull', '#toolbarPullCount');
+    positionCount('#toolbarPush', '#toolbarPushCount');
+    if (err) {
+      $('#toolbarPullCount').html('?');
+      $('#toolbarPullCount').show();
+      $('#toolbarPushCount').html('?');
+      $('#toolbarPushCount').show();
+      return;
+    }
+
+    if (status.behindBy === 0) {
+      $('#toolbarPullCount').hide();
+    } else {
+      $('#toolbarPullCount').html(status.behindBy);
+      $('#toolbarPullCount').show();
+    }
+
+    if (status.aheadBy === 0) {
+      $('#toolbarPushCount').hide();
+    } else {
+      $('#toolbarPushCount').html(status.aheadBy);
+      $('#toolbarPushCount').show();
+    }
+  });
+};
+
+function positionCount(forSelector, countSelector) {
+  var loc = $(forSelector).offset();
+  var width = $(forSelector).width();
+  var countWidth = $(countSelector).width();
+  loc.left += width - countWidth;
+  $(countSelector).offset(loc);
+}
 
 Layout.prototype.refresh = function (callback) {
   callback = callback || function () {};

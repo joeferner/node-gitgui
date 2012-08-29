@@ -12,6 +12,12 @@ GitRepo.prototype.createUrl = function (url) {
   return url + '?repo=' + encodeURIComponent(this.repoPath);
 };
 
+GitRepo.prototype.getStatus = function (callback) {
+  $.getJSON(this.createUrl('/git/status.json'),function (status, textStatus) {
+    return callback(null, status);
+  }).error(ajaxError.bind(null, 'status'));
+};
+
 GitRepo.prototype.getLog = function (callback) {
   $.getJSON(this.createUrl('/log.json'),function (log, textStatus) {
     return callback(null, log);
