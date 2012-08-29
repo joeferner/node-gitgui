@@ -48,9 +48,23 @@
 .ref {
   display: inline-block;
   background-color: rgb(255, 251, 181);
-  padding: 2px;
+  padding: 2px 2px 2px 20px;
   border-radius: 5px;
   border: 1px solid rgb(204, 200, 136);
+  background-repeat: no-repeat;
+  background-position: 2px 50%;
+}
+
+.ref-tag {
+  background-image: url('/image/ref-tag.png');
+}
+
+.ref-head {
+  background-image: url('/image/ref-head.png');
+}
+
+.ref-remote {
+  background-image: url('/image/ref-remote.png');
 }
 
 .fileView-column-graph,

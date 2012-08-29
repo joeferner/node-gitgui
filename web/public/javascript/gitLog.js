@@ -80,7 +80,21 @@ GitLog.prototype.refresh = function (callback) {
     }
     var message = '';
     (log.refs || []).forEach(function (ref) {
-      message += sf("<div class='ref'>{name}</div>", ref);
+      var type, name;
+      if (ref.name.indexOf('refs/tags/') === 0) {
+        type = 'ref-tag';
+        name = ref.name.substr('refs/tags/'.length);
+      } else if (ref.name.indexOf('refs/heads/') === 0) {
+        type = 'ref-head';
+        name = ref.name.substr('refs/heads/'.length);
+      } else if (ref.name.indexOf('refs/remotes/') === 0) {
+        type = 'ref-remote';
+        name = ref.name.substr('refs/remotes/'.length);
+      } else {
+        type = '';
+        name = ref.name;
+      }
+      message += sf("<div class='ref {0}'>{1}</div>", type, name);
     });
     message += escapeHtml(log.message);
 
