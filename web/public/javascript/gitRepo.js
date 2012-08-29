@@ -1,15 +1,15 @@
 'use strict';
 
-module.exports = function () {
-  return new GitRepo();
+module.exports = function (repoPath) {
+  return new GitRepo(repoPath);
 };
 
-function GitRepo() {
-
+function GitRepo(repoPath) {
+  this.repoPath = repoPath;
 }
 
 GitRepo.prototype.createUrl = function (url) {
-  return url + '?repo=.'; // TODO don't hard code this
+  return url + '?repo=' + encodeURIComponent(this.repoPath);
 };
 
 GitRepo.prototype.getLog = function (callback) {
