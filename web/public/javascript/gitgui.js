@@ -22,6 +22,7 @@ function escapeHtml(str) {
 
 $(function () {
   var repoPath = getRepoPath();
+  document.title = 'NodeGitGui - ' + repoPath;
   var gitRepo = require('../web/public/javascript/gitRepo')(repoPath);
   var gitLog = require('../web/public/javascript/gitLog')(gitRepo);
   var mainTree = require('../web/public/javascript/mainTree')(gitRepo);

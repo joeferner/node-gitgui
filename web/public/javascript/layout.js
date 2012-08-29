@@ -78,7 +78,8 @@ function Layout(gitRepo, gitLog, mainTree) {
       "Cancel": function () {
         $('#commitDialog').dialog('close');
       },
-      "OK": this.localCommitDo.bind(this)
+      "Commit": this.localCommitDo.bind(this),
+      "Commit And Push": this.localCommitAndPushDo.bind(this)
     }
   });
 }
@@ -104,6 +105,26 @@ Layout.prototype.localCommitDo = function () {
     }
     self.refresh(showError);
     $('#commitDialog').dialog('close');
+  });
+};
+
+Layout.prototype.localCommitAndPushDo = function () {
+  var self = this;
+  var commitMessage = $('#commitDialogMessage').val();
+  if (!commitMessage) {
+    return showMessage('You must specify a message.');
+  }
+  self.gitRepo.commit(commitMessage, function (err) {
+    if (err) {
+      return showError(err);
+    }
+    self.gitRepo.push(function (err) {
+      if (err) {
+        return showError(err);
+      }
+      self.refresh(showError);
+      $('#commitDialog').dialog('close');
+    });
   });
 };
 
