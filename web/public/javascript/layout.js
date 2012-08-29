@@ -83,7 +83,24 @@ function Layout(gitRepo, gitLog, mainTree) {
     }
   });
 
-  setInterval(this.refreshStatus.bind(this), 1000);
+  this.refreshStatusInterval = null;
+  this.refreshStatusIntervalClear = null;
+  $('body').mousemove(function () {
+    if (self.refreshStatusIntervalClear) {
+      clearTimeout(self.refreshStatusIntervalClear);
+    }
+    self.refreshStatusIntervalClear = setTimeout(function () {
+      clearInterval(self.refreshStatusInterval);
+      self.refreshStatusIntervalClear = null;
+      self.refreshStatusInterval = null;
+    }, 10 * 1000);
+
+    if (!self.refreshStatusInterval) {
+      self.refreshStatusInterval = setInterval(self.refreshStatus.bind(self), 10 * 1000);
+      self.refreshStatus();
+    }
+  });
+  this.refreshStatus();
 }
 
 Layout.prototype.actionRefresh = function () {
@@ -160,7 +177,8 @@ Layout.prototype.remotePush = function () {
   });
 };
 
-Layout.prototype.refreshStatus = function () {
+Layout.prototype.refreshStatus = function (callback) {
+  callback = callback || function () {};
   this.gitRepo.getStatus(function (err, status) {
     positionCount('#toolbarPull', '#toolbarPullCount');
     positionCount('#toolbarPush', '#toolbarPushCount');
@@ -169,7 +187,7 @@ Layout.prototype.refreshStatus = function () {
       $('#toolbarPullCount').show();
       $('#toolbarPushCount').html('?');
       $('#toolbarPushCount').show();
-      return;
+      return callback(err);
     }
 
     if (status.behindBy === 0) {
@@ -185,6 +203,8 @@ Layout.prototype.refreshStatus = function () {
       $('#toolbarPushCount').html(status.aheadBy);
       $('#toolbarPushCount').show();
     }
+
+    return callback();
   });
 };
 
@@ -197,9 +217,10 @@ function positionCount(forSelector, countSelector) {
 }
 
 Layout.prototype.refresh = function (callback) {
-  callback = callback || function () {};
+  callback = callback || showError;
   async.parallel([
     this.mainTree.refresh.bind(this.mainTree),
-    this.gitLog.refresh.bind(this.gitLog)
+    this.gitLog.refresh.bind(this.gitLog),
+    this.refreshStatus.bind(this)
   ], callback);
 };

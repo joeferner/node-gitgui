@@ -78,6 +78,7 @@
 }
 
 .statusCount {
+  display: none;
   position: absolute;
   padding: 0px 2px 0px 2px;
   color: rgb(255, 255, 255);
