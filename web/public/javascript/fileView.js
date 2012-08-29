@@ -85,22 +85,27 @@ FileView.prototype.refresh = function (callback) {
       });
     });
     if (!row.id) {
-      $("#fileView tbody tr").dblclick(function (e) {
-        var data = self.filesTable.fnGetData(this);
-        var filename = data[2];
-        var fnName = data[1] === 'Y' ? 'reset' : 'stage';
-        self.gitRepo[fnName](filename, function (err) {
-          if (err) {
-            return showError(err);
-          }
-          self.refresh();
-        });
-      });
+      $("#fileView tbody tr").dblclick(toggleStaged);
     }
 
     $("#fileView tbody tr").first().click();
     return callback();
   });
+
+  function toggleStaged(e) {
+    var row = this;
+    var data = self.filesTable.fnGetData(row);
+    var filename = data[2];
+    var isStaged = data[1] === 'Y';
+    var newValue = isStaged ? 'N' : 'Y';
+    var fnName = isStaged ? 'reset' : 'stage';
+    self.gitRepo[fnName](filename, function (err) {
+      if (err) {
+        return showError(err);
+      }
+      self.filesTable.fnUpdate(newValue, row, 1)
+    });
+  }
 
   function toTableRow(fileInfo) {
     return [fileInfo.action, fileInfo.staged ? 'Y' : 'N', fileInfo.filename];
