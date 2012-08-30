@@ -24,6 +24,10 @@
   cursor: pointer;
 }
 
+.branch-current {
+  font-weight: bold;
+}
+
 .diff {
   font-family: monospace;
 }

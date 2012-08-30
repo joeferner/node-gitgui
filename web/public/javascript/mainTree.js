@@ -75,7 +75,9 @@ MainTree.prototype.loadBranches = function (node, callback) {
 
   function toTreeNode(branch) {
     return {
-      attr: { id: "mainTreeBranch_" + branch.name },
+      attr: {
+        id: "mainTreeBranch_" + branch.name,
+        class: branch.current ? 'branch branch-current' : 'branch' },
       data: branch.name
     };
   }
