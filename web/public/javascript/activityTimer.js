@@ -11,10 +11,8 @@ exports.add = function (fn, opts) {
     noActivityCount = 0;
     if (!activityInterval) {
       activityInterval = setInterval(function () {
-        console.log(new Date(), 'activity');
         noActivityCount++;
         if (noActivityCount > opts.activityTimeoutCount) {
-          console.log(new Date(), 'activity clear');
           clearInterval(activityInterval);
           activityInterval = null;
         }
@@ -24,7 +22,6 @@ exports.add = function (fn, opts) {
   });
 
   setInterval(function () {
-    console.log(new Date(), 'no activity timer');
     fn();
   }, opts.noActivityInterval);
 };
