@@ -1,6 +1,7 @@
 'use strict';
 
 var async = require('async');
+var activityTimer = require('../web/public/javascript/activityTimer');
 
 module.exports = function (gitRepo, gitLog, mainTree) {
   return new Layout(gitRepo, gitLog, mainTree);
@@ -83,22 +84,9 @@ function Layout(gitRepo, gitLog, mainTree) {
     }
   });
 
-  this.refreshStatusInterval = null;
-  this.refreshStatusIntervalClear = null;
-  $('body').mousemove(function () {
-    if (self.refreshStatusIntervalClear) {
-      clearTimeout(self.refreshStatusIntervalClear);
-    }
-    self.refreshStatusIntervalClear = setTimeout(function () {
-      clearInterval(self.refreshStatusInterval);
-      self.refreshStatusIntervalClear = null;
-      self.refreshStatusInterval = null;
-    }, 10 * 1000);
-
-    if (!self.refreshStatusInterval) {
-      self.refreshStatusInterval = setInterval(self.refreshStatus.bind(self), 10 * 1000);
-      self.refreshStatus();
-    }
+  activityTimer.add(this.refreshStatus.bind(this), {
+    activityInterval: 10 * 1000, // 10seconds
+    noActivityInterval: 1 * 60 * 60 * 1000 // 1hour
   });
   this.refreshStatus();
 }

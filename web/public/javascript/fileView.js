@@ -69,7 +69,7 @@ FileView.prototype.refresh = function (callback) {
     commitInfoHtml += '<div class="commitInfo-field"><span class="commitInfo-fieldTitle">Message:</span><div class="commitInfo-message">' + commitInfo.message + '</div></div>';
     $('#commitInfo').html(commitInfoHtml);
 
-    var fileRows = commitInfo.files.map(toTableRow);
+    var fileRows = (commitInfo.files || []).map(toTableRow);
     if (row.id) {
       self.filesTable.fnSetColumnVis(1, false);
     } else {
