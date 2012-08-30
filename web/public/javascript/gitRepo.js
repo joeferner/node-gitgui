@@ -30,6 +30,12 @@ GitRepo.prototype.getTags = function (callback) {
   }).error(ajaxError.bind(null, 'tags'));
 };
 
+GitRepo.prototype.getStashes = function (callback) {
+  $.getJSON(this.createUrl('/stashes.json'),function (stashes, textStatus) {
+    return callback(null, stashes);
+  }).error(ajaxError.bind(null, 'stashes'));
+};
+
 GitRepo.prototype.getBranches = function (callback) {
   $.getJSON(this.createUrl('/branches.json'),function (branches, textStatus) {
     return callback(null, branches);

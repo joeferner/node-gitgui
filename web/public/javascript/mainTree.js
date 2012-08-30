@@ -40,6 +40,10 @@ MainTree.prototype.getTreeData = function (node, callback) {
     return this.loadTags(node, callback);
   }
 
+  if (id === 'mainTreeStashes') {
+    return this.loadStashes(node, callback);
+  }
+
   console.log('unhandled tree node', node.attr('id'));
 };
 
@@ -48,6 +52,7 @@ MainTree.prototype.loadRoot = function (node, callback) {
   setTimeout(function () {
     self.jstree.open_node($('#mainTreeBranches'), null, true);
     self.jstree.open_node($('#mainTreeTags'), null, true);
+    self.jstree.open_node($('#mainTreeStashes'), null, true);
   }, 500);
   return callback([
     {
@@ -58,6 +63,11 @@ MainTree.prototype.loadRoot = function (node, callback) {
     {
       attr: { id: "mainTreeTags" },
       data: "Tags",
+      state: "closed"
+    },
+    {
+      attr: { id: "mainTreeStashes" },
+      data: "Stashes",
       state: "closed"
     }
   ]);
@@ -97,6 +107,24 @@ MainTree.prototype.loadTags = function (node, callback) {
     return {
       attr: { id: "mainTreeTag_" + tag.name },
       data: tag.name
+    };
+  }
+};
+
+MainTree.prototype.loadStashes = function (node, callback) {
+  var self = this;
+  this.gitRepo.getStashes(function (err, stashes) {
+    if (err) {
+      return showError(err);
+    }
+    var stashNodes = stashes.map(toTreeNode);
+    return callback(stashNodes)
+  });
+
+  function toTreeNode(stash) {
+    return {
+      attr: { id: "mainTreeStash_" + stash.id },
+      data: stash.message
     };
   }
 };
