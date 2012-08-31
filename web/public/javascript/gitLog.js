@@ -20,7 +20,7 @@ function GitLog(gitRepo) {
     bPaginate: false,
     bProcessing: true,
     aoColumns: [
-      { sClass: 'fileView-column-graph', sWidth: '100px' },
+      { sClass: 'fileView-column-graph', sWidth: '300px' },
       { sClass: 'fileView-column-message' },
       { sClass: 'fileView-column-date', sWidth: '200px' },
       { sClass: 'fileView-column-committer', sWidth: '200px' },
@@ -57,7 +57,7 @@ GitLog.prototype.refresh = function (callback) {
     if (err) {
       return callback(err);
     }
-    //createGraphHtml(logs);
+    createGraphHtml(logs);
     var logRows = logs.map(toTableRow);
     self.dataTable.fnAddData(logRows);
 
@@ -105,103 +105,168 @@ GitLog.prototype.refresh = function (callback) {
   }
 };
 
-// todo figure out this logic
 function createGraphHtml(logs) {
-  var columnHeads = logs
-    .filter(function (l) {
-      return !l.children || l.children.length === 0;
-    })
-    .map(function (l) { return l.id; });
+  var nextColumnColorIdx = 0;
+  var columnColors = [
+    'rgb(180, 0, 0)',
+    'rgb(0, 180, 0)',
+    'rgb(0, 0, 180)',
+    'rgb(180, 180, 0)',
+    'rgb(180, 0, 180)',
+    'rgb(0, 180, 180)'
+  ];
 
-  var commitMap = {};
-  logs.forEach(function (l) {
-    l.graphColumns = l.graphColumns || [];
-    l.foundCommitColumn = false;
-    commitMap[l.id] = l;
+  var columnWidth = 25;
+  var maxColumns = 0;
+  var columns = [];
+  var currentColumnColors = [];
+
+  logs.forEach(function (log) {
+    log.columnIdx = findColumnIdx(log);
+    maxColumns = Math.max(maxColumns, log.columnIdx);
+    log.childColumnIdxs = getChildColumnIdxs(log);
+    log.currentColumns = columns.slice();
+    log.parentColumnIdxs = getParentColumnIdxs(log);
   });
 
-  for (var columnHeadIdx = 0; columnHeadIdx < columnHeads.length; columnHeadIdx++) {
-    for (var logIdx = 0; logIdx < logs.length; logIdx++) {
-      var log = logs[logIdx];
-      if (log.id === columnHeads[columnHeadIdx] && !log.foundCommitColumn) {
-        log.foundCommitColumn = true;
-        log.graphColumns[columnHeadIdx] = true;
-        if (log.parents) {
-          columnHeads[columnHeadIdx] = log.parents[0];
-          for (var parentIdx = 1; parentIdx < log.parents.length; parentIdx++) {
-            columnHeads.push(log.parents[parentIdx]);
-          }
+  logs.forEach(function (log) {
+    var svgOpts = {
+      width: (maxColumns + 1) * columnWidth,
+      circleCenter: getCenter(log.columnIdx),
+      parentLinesHtml: '',
+      childLinesHtml: '',
+      passThroughLinesHtml: ''
+    };
+
+    if (log.childColumnIdxs) {
+      log.childColumnIdxs.forEach(function (childColumnIdx, i) {
+        currentColumnColors[childColumnIdx] = currentColumnColors[childColumnIdx] || getNextColumnColor(currentColumnColors);
+
+        svgOpts.parentLinesHtml += sf('<line x1="{src}" y1="12" x2="{dest}" y2="0" style="stroke: {color}; stroke-width: 2;"/>', {
+          src: svgOpts.circleCenter,
+          dest: getCenter(childColumnIdx),
+          color: currentColumnColors[childColumnIdx]
+        });
+
+        if (i !== 0) {
+          currentColumnColors[childColumnIdx] = null;
+        }
+      });
+    }
+
+    if (log.parentColumnIdxs) {
+      log.parentColumnIdxs.forEach(function (parentColumnIdx) {
+        currentColumnColors[parentColumnIdx] = currentColumnColors[parentColumnIdx] || getNextColumnColor(currentColumnColors);
+
+        svgOpts.parentLinesHtml += sf('<line x1="{src}" y1="12" x2="{dest}" y2="23" style="stroke: {color}; stroke-width: 2;"/>', {
+          src: svgOpts.circleCenter,
+          dest: getCenter(parentColumnIdx),
+          color: currentColumnColors[parentColumnIdx]
+        });
+      });
+    }
+
+    if (log.currentColumns) {
+      for (var currentColumnIdx = 0; currentColumnIdx < log.currentColumns.length; currentColumnIdx++) {
+        if (log.currentColumns[currentColumnIdx]) {
+          currentColumnColors[currentColumnIdx] = currentColumnColors[currentColumnIdx] || getNextColumnColor(currentColumnColors);
+
+          svgOpts.passThroughLinesHtml += sf('<line x1="{x}" y1="0" x2="{x}" y2="25" style="stroke: {color}; stroke-width: 2;"/>', {
+            x: getCenter(currentColumnIdx),
+            color: currentColumnColors[currentColumnIdx]
+          });
         }
       }
     }
-  }
-
-  var z = 0;
-  var dest;
-  var lastLogParents = [];
-  logs.forEach(function (log) {
-    log.graphColumns = log.graphColumns || [];
-    var opts = {
-      width: columnHeads.length * 25,
-      circleCenter: getCenter(log.graphColumns.indexOf(true)),
-      parentLinesHtml: '',
-      childLinesHtml: ''
-    };
-
-    var lastLogParentIdx = lastLogParents.indexOf(log.id);
-    if (lastLogParentIdx >= 0) {
-      lastLogParents = lastLogParents.slice(0, lastLogParentIdx).concat(lastLogParents.slice(lastLogParentIdx + 1));
-    }
-
-    (log.parents || []).forEach(function (parentId) {
-      var parent = commitMap[parentId];
-      if (parent) {
-        dest = getCenter(parent.graphColumns.indexOf(true));
-        opts.parentLinesHtml += sf('<line x1="{src}" y1="12" x2="{dest}" y2="23" style="stroke: rgb(255,0,0); stroke-width: 2;"/>', {
-          src: opts.circleCenter,
-          dest: dest
-        });
-      }
-    });
-
-    (log.children || []).forEach(function (childId) {
-      var child = commitMap[childId];
-      if (child) {
-        dest = getCenter(child.graphColumns.indexOf(true));
-        opts.parentLinesHtml += sf('<line x1="{src}" y1="12" x2="{dest}" y2="2" style="stroke: rgb(255,0,0); stroke-width: 2;"/>', {
-          src: opts.circleCenter,
-          dest: dest
-        });
-      }
-    });
-
-    lastLogParents.forEach(function (parentId) {
-      var parent = commitMap[parentId];
-      if (parent) {
-        dest = getCenter(parent.graphColumns.indexOf(true));
-        opts.parentLinesHtml += sf('<line x1="{dest}" y1="25" x2="{dest}" y2="0" style="stroke: rgb(255,0,0); stroke-width: 2;"/>', {
-          dest: dest
-        });
-      }
-    });
 
     log.graphHtml = sf(
       '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="{width}" height="25">'
+        + '{passThroughLinesHtml}'
         + '{parentLinesHtml}'
         + '{childLinesHtml}'
         + '<circle cx="{circleCenter}" cy="12" r="4" stroke="black" stroke-width="1" fill="red"/>'
         + '</svg>',
-      opts);
-
-    if (z < 20) {
-      console.log(log);
-      z++;
-    }
-
-    lastLogParents = lastLogParents.concat(log.parents || []);
+      svgOpts);
   });
 
+  function getChildColumnIdxs(log) {
+    if (!log.children) {
+      return null;
+    }
+    var childrenColumnIdxs = [];
+    for (var childColumnIdx = 0; childColumnIdx < columns.length; childColumnIdx++) {
+      var col = columns[childColumnIdx];
+      if (!col) {
+        continue;
+      }
+      if (col.nextId === log.id) {
+        childrenColumnIdxs.push(childColumnIdx);
+        columns[childColumnIdx] = null;
+      }
+    }
+    return childrenColumnIdxs;
+  }
+
+  function getParentColumnIdxs(log) {
+    if (!log.parents) {
+      return null;
+    }
+    var parentColumnIdxs = [];
+    for (var parentIdx = 0; parentIdx < log.parents.length; parentIdx++) {
+      var columnIdx;
+      if (parentIdx === 0) {
+        columnIdx = log.columnIdx;
+      } else {
+        columnIdx = findFirstOpenColumnIdx();
+      }
+      parentColumnIdxs[parentIdx] = columnIdx;
+      columns[columnIdx] = columns[columnIdx] || { };
+      columns[columnIdx].nextId = log.parents[parentIdx];
+    }
+    return parentColumnIdxs;
+  }
+
+  function getNextColumnColor(usedColors) {
+    var color;
+    var startingNextColorIdx = nextColumnColorIdx;
+    while (true) {
+      color = columnColors[nextColumnColorIdx];
+      nextColumnColorIdx++;
+      if (nextColumnColorIdx >= columnColors.length) {
+        nextColumnColorIdx = 0;
+      }
+      if (startingNextColorIdx === nextColumnColorIdx) {
+        break;
+      }
+      if (usedColors.indexOf(color) < 0) {
+        break;
+      }
+    }
+    return color;
+  }
+
+  function findColumnIdx(log) {
+    for (var columnIdx = 0; columnIdx < columns.length; columnIdx++) {
+      if (!columns[columnIdx]) {
+        continue;
+      }
+      if (columns[columnIdx].nextId === log.id) {
+        return columnIdx;
+      }
+    }
+    return findFirstOpenColumnIdx();
+  }
+
+  function findFirstOpenColumnIdx() {
+    for (var columnIdx = 0; columnIdx < columns.length; columnIdx++) {
+      if (columns[columnIdx] === null) {
+        return columnIdx;
+      }
+    }
+    return columns.length;
+  }
+
   function getCenter(colIdx) {
-    return (colIdx * 25) + 12;
+    return (colIdx * columnWidth) + (columnWidth / 2);
   }
 }
