@@ -75,6 +75,9 @@ function Layout(gitRepo, gitLog, mainTree) {
     modal: true,
     height: 'auto',
     width: 'auto',
+    open: function () {
+      $('#commitDialogMessage').focus().select();
+    },
     buttons: {
       "Cancel": function () {
         $('#commitDialog').dialog('close');
