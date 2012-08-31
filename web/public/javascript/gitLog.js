@@ -120,6 +120,7 @@ function createGraphHtml(logs) {
   var maxColumns = 0;
   var columns = [];
   var currentColumnColors = [];
+  var graphColumnWidth;
 
   logs.forEach(function (log) {
     log.columnIdx = findColumnIdx(log);
@@ -129,9 +130,12 @@ function createGraphHtml(logs) {
     log.parentColumnIdxs = getParentColumnIdxs(log);
   });
 
+  graphColumnWidth = (maxColumns + 1) * columnWidth;
+  $('#gitLog thead th.fileView-column-graph').width(Math.max(65, graphColumnWidth));
+
   logs.forEach(function (log) {
     var svgOpts = {
-      width: (maxColumns + 1) * columnWidth,
+      width: graphColumnWidth,
       circleCenter: getCenter(log.columnIdx),
       parentLinesHtml: '',
       childLinesHtml: '',
