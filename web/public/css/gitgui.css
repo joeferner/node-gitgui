@@ -23,6 +23,10 @@
   padding-left: 4px;
 }
 
+#gitLog tbody .fileView-column-graph svg {
+  position: absolute;
+}
+
 .commitInfo-fieldTitle {
   font-weight: bold;
 }

@@ -117,6 +117,7 @@ function createGraphHtml(logs) {
   ];
 
   var columnWidth = 25;
+  var columnHeight = 25;
   var maxColumns = 0;
   var columns = [];
   var currentColumnColors = [];
@@ -139,17 +140,19 @@ function createGraphHtml(logs) {
       circleCenter: getCenter(log.columnIdx),
       parentLinesHtml: '',
       childLinesHtml: '',
-      passThroughLinesHtml: ''
+      passThroughLinesHtml: '',
+      height: columnHeight
     };
 
     if (log.childColumnIdxs) {
       log.childColumnIdxs.forEach(function (childColumnIdx, i) {
         currentColumnColors[childColumnIdx] = currentColumnColors[childColumnIdx] || getNextColumnColor(currentColumnColors);
 
-        svgOpts.parentLinesHtml += sf('<line x1="{src}" y1="12" x2="{dest}" y2="0" style="stroke: {color}; stroke-width: 2;"/>', {
+        svgOpts.parentLinesHtml += sf('<polyline points="{src} {midY} {dest} 2 {dest} 0" stroke="{color}" stroke-width="2" stroke-linejoin="round" fill="none" />', {
           src: svgOpts.circleCenter,
           dest: getCenter(childColumnIdx),
-          color: currentColumnColors[childColumnIdx]
+          color: currentColumnColors[childColumnIdx],
+          midY: columnHeight / 2
         });
 
         if (i !== 0) {
@@ -162,10 +165,13 @@ function createGraphHtml(logs) {
       log.parentColumnIdxs.forEach(function (parentColumnIdx) {
         currentColumnColors[parentColumnIdx] = currentColumnColors[parentColumnIdx] || getNextColumnColor(currentColumnColors);
 
-        svgOpts.parentLinesHtml += sf('<line x1="{src}" y1="12" x2="{dest}" y2="23" style="stroke: {color}; stroke-width: 2;"/>', {
+        svgOpts.parentLinesHtml += sf('<polyline points="{src} {midY} {dest} {joinHeight} {dest} {height}" stroke="{color}" stroke-width="2" stroke-linejoin="round" fill="none" />', {
           src: svgOpts.circleCenter,
           dest: getCenter(parentColumnIdx),
-          color: currentColumnColors[parentColumnIdx]
+          color: currentColumnColors[parentColumnIdx],
+          midY: columnHeight / 2,
+          joinHeight: columnHeight - 4,
+          height: columnHeight
         });
       });
     }
@@ -175,16 +181,17 @@ function createGraphHtml(logs) {
         if (log.currentColumns[currentColumnIdx]) {
           currentColumnColors[currentColumnIdx] = currentColumnColors[currentColumnIdx] || getNextColumnColor(currentColumnColors);
 
-          svgOpts.passThroughLinesHtml += sf('<line x1="{x}" y1="0" x2="{x}" y2="25" style="stroke: {color}; stroke-width: 2;"/>', {
+          svgOpts.passThroughLinesHtml += sf('<line x1="{x}" y1="0" x2="{x}" y2="{height}" style="stroke: {color}; stroke-width: 2;"/>', {
             x: getCenter(currentColumnIdx),
-            color: currentColumnColors[currentColumnIdx]
+            color: currentColumnColors[currentColumnIdx],
+            height: columnHeight
           });
         }
       }
     }
 
     log.graphHtml = sf(
-      '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="{width}" height="25">'
+      '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="{width}" height="{height}">'
         + '{passThroughLinesHtml}'
         + '{parentLinesHtml}'
         + '{childLinesHtml}'
