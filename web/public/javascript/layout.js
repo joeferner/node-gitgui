@@ -68,6 +68,7 @@ function Layout(gitRepo, gitLog, mainTree) {
   $('#toolbarRefresh').click(this.actionRefresh.bind(this));
   $('#toolbarCommit').click(this.localCommit.bind(this));
   $('#toolbarStash').click(this.localStash.bind(this));
+  $('#toolbarTag').click(this.localTag.bind(this));
   $('#toolbarFetch').click(this.remoteFetch.bind(this));
   $('#toolbarPull').click(this.remotePull.bind(this));
   $('#toolbarPush').click(this.remotePush.bind(this));
@@ -105,6 +106,22 @@ function Layout(gitRepo, gitLog, mainTree) {
     }
   });
 
+  $('#tagDialog').dialog({
+    autoOpen: false,
+    modal: true,
+    height: 'auto',
+    width: 'auto',
+    open: function () {
+      $('#tagDialogName').focus().select();
+    },
+    buttons: {
+      "Cancel": function () {
+        $('#tagDialog').dialog('close');
+      },
+      "Tag": this.localTagDo.bind(this)
+    }
+  });
+
   activityTimer.add(this.refreshStatus.bind(this), {
     activityInterval: 10 * 1000, // 10seconds
     noActivityInterval: 1 * 60 * 60 * 1000 // 1hour
@@ -133,6 +150,33 @@ Layout.prototype.localStashDo = function () {
     }
     self.refresh(showError);
     $('#stashDialog').dialog('close');
+  });
+};
+
+Layout.prototype.localTag = function () {
+  var selectRow = this.gitLog.getSelectedRow();
+  if (!selectRow || !selectRow.id) {
+    return showMessage("Invalid commit selected to tag.");
+  }
+  $('#tagDialogCommitId').val(selectRow.id);
+  $('#tagDialogCommit').html(selectRow.id + ' - ' + selectRow.message);
+  $('#tagDialog').dialog('open');
+};
+
+Layout.prototype.localTagDo = function () {
+  var self = this;
+  var commitId = $('#tagDialogCommitId').val();
+  var tagName = $('#tagDialogName').val();
+  var tagDescription = $('#tagDialogDescription').val();
+  if (!tagName) {
+    return showMessage('You must specify a name.');
+  }
+  self.gitRepo.tag(commitId, tagName, tagDescription, function (err) {
+    if (err) {
+      return showError(err);
+    }
+    self.refresh(showError);
+    $('#tagDialog').dialog('close');
   });
 };
 

@@ -30,12 +30,12 @@ $(function () {
     }
   };
 
-  var gitRepo = require('../web/public/javascript/gitRepo')(repoPath);
-  var gitLog = require('../web/public/javascript/gitLog')(gitRepo);
-  var mainTree = require('../web/public/javascript/mainTree')(main, gitRepo);
-  var fileView = require('../web/public/javascript/fileView')(gitRepo, gitLog);
-  var diffView = require('../web/public/javascript/diffView')(gitRepo, fileView);
-  var layout = require('../web/public/javascript/layout')(gitRepo, gitLog, mainTree);
+  main.gitRepo = require('../web/public/javascript/gitRepo')(repoPath);
+  main.gitLog = require('../web/public/javascript/gitLog')(main.gitRepo);
+  main.mainTree = require('../web/public/javascript/mainTree')(main, main.gitRepo);
+  main.fileView = require('../web/public/javascript/fileView')(main.gitRepo, main.gitLog);
+  main.diffView = require('../web/public/javascript/diffView')(main.gitRepo, main.fileView);
+  main.layout = require('../web/public/javascript/layout')(main.gitRepo, main.gitLog, main.mainTree);
 });
 
 function getRepoPath() {

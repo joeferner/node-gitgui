@@ -109,6 +109,17 @@ GitRepo.prototype.stash = function (stashName, callback) {
   }).error(ajaxError.bind(null, 'stash'));
 };
 
+GitRepo.prototype.tag = function (commit, tagName, tagDescription, callback) {
+  var data = {
+    commit: commit,
+    name: tagName,
+    description: tagDescription
+  };
+  $.post(this.createUrl('/tag/new?action=add'), data,function (data, textStatus) {
+    return callback(null, data);
+  }).error(ajaxError.bind(null, 'tag'));
+};
+
 GitRepo.prototype.commit = function (message, callback) {
   var data = {
     message: message
