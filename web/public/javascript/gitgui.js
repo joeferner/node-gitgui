@@ -23,12 +23,19 @@ function escapeHtml(str) {
 $(function () {
   var repoPath = getRepoPath();
   document.title = 'NodeGitGui - ' + repoPath;
+
+  var main = {
+    refresh: function () {
+      layout.refresh();
+    }
+  };
+
   var gitRepo = require('../web/public/javascript/gitRepo')(repoPath);
   var gitLog = require('../web/public/javascript/gitLog')(gitRepo);
-  var mainTree = require('../web/public/javascript/mainTree')(gitRepo);
+  var mainTree = require('../web/public/javascript/mainTree')(main, gitRepo);
   var fileView = require('../web/public/javascript/fileView')(gitRepo, gitLog);
   var diffView = require('../web/public/javascript/diffView')(gitRepo, fileView);
-  require('../web/public/javascript/layout')(gitRepo, gitLog, mainTree);
+  var layout = require('../web/public/javascript/layout')(gitRepo, gitLog, mainTree);
 });
 
 function getRepoPath() {

@@ -1,10 +1,11 @@
 'use strict';
 
-module.exports = function (gitRepo) {
-  return new MainTree(gitRepo);
+module.exports = function (layout, gitRepo) {
+  return new MainTree(layout, gitRepo);
 };
 
-function MainTree(gitRepo) {
+function MainTree(main, gitRepo) {
+  this.main = main;
   this.gitRepo = gitRepo;
   this.tree = $('#mainTree').jstree({
     plugins: ["themes", "json_data", "ui", "types", "contextmenu"],
@@ -161,5 +162,32 @@ MainTree.prototype.loadStashes = function (node, callback) {
 
 MainTree.prototype.onMainTreeContextMenu = function (node) {
   var nodeId = $(node).attr('id');
-  console.log('tree node context menu:', nodeId);
+  if (nodeId.indexOf('mainTreeStash_') === 0) {
+    return this.onMainTreeContextMenuStash(nodeId.substr('mainTreeStash_'.length));
+  } else {
+    console.log('unhandled tree node context menu:', nodeId);
+  }
+};
+
+MainTree.prototype.onMainTreeContextMenuStash = function (stashId) {
+  var self = this;
+  return {
+    pop: {
+      label: "Pop",
+      action: function () {
+        return self.stashPop(stashId);
+      },
+      icon: "/image/stash-pop.png"
+    }
+  };
+};
+
+MainTree.prototype.stashPop = function (stashId) {
+  var self = this;
+  this.gitRepo.stashPop(stashId, function (err) {
+    if (err) {
+      return showError(err);
+    }
+    self.main.refresh();
+  });
 };

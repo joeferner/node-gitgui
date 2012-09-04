@@ -9,7 +9,12 @@ function GitRepo(repoPath) {
 }
 
 GitRepo.prototype.createUrl = function (url) {
-  return url + '?repo=' + encodeURIComponent(this.repoPath);
+  if (url.indexOf('?') >= 0) {
+    url += '&';
+  } else {
+    url += '?';
+  }
+  return url + 'repo=' + encodeURIComponent(this.repoPath);
 };
 
 GitRepo.prototype.getStatus = function (callback) {
@@ -86,6 +91,13 @@ GitRepo.prototype.reset = function (filename, callback) {
   $.post(this.createUrl('/git/reset/' + filename),function (data, textStatus) {
     return callback(null, data);
   }).error(ajaxError.bind(null, 'reset'));
+};
+
+GitRepo.prototype.stashPop = function (stashId, callback) {
+  stashId = encodeURIComponent(stashId);
+  $.post(this.createUrl('/stash/' + stashId + '?action=pop'),function (data, textStatus) {
+    return callback(null, data);
+  }).error(ajaxError.bind(null, 'stashPop'));
 };
 
 GitRepo.prototype.commit = function (message, callback) {
