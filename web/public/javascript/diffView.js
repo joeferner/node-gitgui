@@ -22,6 +22,10 @@ DiffView.prototype.refresh = function (callback) {
   callback = callback || showError;
   var commitId = this.fileView.commitId;
   var row = this.fileView.getSelectedFilename();
+  if (!row) {
+    $('#diff').html('');
+    return callback();
+  }
 
   if (isImageFilename(row.filename)) {
     var fname = encodeURIComponent(row.filename);
