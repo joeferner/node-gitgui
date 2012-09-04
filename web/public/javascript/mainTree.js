@@ -7,7 +7,7 @@ module.exports = function (gitRepo) {
 function MainTree(gitRepo) {
   this.gitRepo = gitRepo;
   this.tree = $('#mainTree').jstree({
-    plugins: ["themes", "json_data", "ui", "crrm", "contextmenu"],
+    plugins: ["themes", "json_data", "ui", "types", "contextmenu"],
     themes: {
       dots: false,
       url: '/css/jstree/default/style.css'
@@ -17,6 +17,25 @@ function MainTree(gitRepo) {
     },
     contextmenu: {
       items: this.onMainTreeContextMenu.bind(this)
+    },
+    types: {
+      types: {
+        "ref": {
+          icon: {
+            image: '/image/ref-head.png'
+          }
+        },
+        "tag": {
+          icon: {
+            image: '/image/ref-tag.png'
+          }
+        },
+        "stash": {
+          icon: {
+            image: '/image/ref-stash.png'
+          }
+        }
+      }
     }
   });
 
@@ -90,7 +109,9 @@ MainTree.prototype.loadBranches = function (node, callback) {
     return {
       attr: {
         id: "mainTreeBranch_" + branch.name,
-        class: branch.current ? 'branch branch-current' : 'branch' },
+        class: branch.current ? 'branch branch-current' : 'branch',
+        rel: 'ref'
+      },
       data: branch.name
     };
   }
@@ -108,7 +129,10 @@ MainTree.prototype.loadTags = function (node, callback) {
 
   function toTreeNode(tag) {
     return {
-      attr: { id: "mainTreeTag_" + tag.name },
+      attr: {
+        id: "mainTreeTag_" + tag.name,
+        rel: 'tag'
+      },
       data: tag.name
     };
   }
@@ -126,7 +150,10 @@ MainTree.prototype.loadStashes = function (node, callback) {
 
   function toTreeNode(stash) {
     return {
-      attr: { id: "mainTreeStash_" + stash.id },
+      attr: {
+        id: "mainTreeStash_" + stash.id,
+        rel: 'stash'
+      },
       data: stash.message
     };
   }
