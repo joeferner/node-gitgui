@@ -106,3 +106,33 @@
   border: 1px solid rgb(153, 0, 0);
   border-radius: 5px;
 }
+
+.collapsedSection {
+  background-color: rgb(151, 219, 255);
+  padding-top: 15px;
+  padding-bottom: 15px;
+  cursor: pointer;
+}
+
+.collapsedSection-start {
+  border-bottom: 1px solid black;
+  -webkit-box-shadow: inset 0px -10px 15px rgba(50, 50, 50, 0.2);
+  -moz-box-shadow: inset 0px -10px 15px rgba(50, 50, 50, 0.2);
+  box-shadow: inset 0px -10px 15px rgba(50, 50, 50, 0.2);
+}
+
+.collapsedSection-end {
+  border-top: 1px solid black;
+  -webkit-box-shadow: inset 0px 10px 15px rgba(50, 50, 50, 0.2);
+  -moz-box-shadow: inset 0px 10px 15px rgba(50, 50, 50, 0.2);
+  box-shadow: inset 0px 10px 15px rgba(50, 50, 50, 0.2);
+}
+
+.collapsedSection-middle {
+  border-bottom: 1px solid black;
+  border-top: 1px solid black;
+
+  -webkit-box-shadow: inset 0px -10px 15px rgba(50, 50, 50, 0.2), inset 0px 10px 15px rgba(50, 50, 50, 0.2);
+  -moz-box-shadow: inset 0px -10px 15px rgba(50, 50, 50, 0.2), inset 0px 10px 15px rgba(50, 50, 50, 0.2);
+  box-shadow: inset 0px -10px 15px rgba(50, 50, 50, 0.2), inset 0px 10px 15px rgba(50, 50, 50, 0.2);
+}

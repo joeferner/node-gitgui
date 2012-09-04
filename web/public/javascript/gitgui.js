@@ -36,7 +36,7 @@ $(function () {
 
   main.confirm = function (message) {
     return window.confirm(message);
-  }
+  };
 
   main.gitRepo = require('../web/public/javascript/gitRepo')(repoPath);
   main.gitLog = require('../web/public/javascript/gitLog')(main.gitRepo);
