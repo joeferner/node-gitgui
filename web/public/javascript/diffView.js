@@ -29,7 +29,7 @@ DiffView.prototype.refresh = function (callback) {
 
   if (isImageFilename(row.filename)) {
     var fname = encodeURIComponent(row.filename);
-    $('#diff').html(sf('<img src="/raw/{0}/{1}?repo={2}" />', commitId, fname, encodeURIComponent(this.gitRepo.repoPath)));
+    $('#diff').html(sf('<img src="/raw/{0}/{1}?repo={2}" />', commitId || 'workingCopy', fname, encodeURIComponent(this.gitRepo.repoPath)));
     return callback();
   } else if (row.filename.match(/\/$/)) {
     $('#diff').html('Directory');
