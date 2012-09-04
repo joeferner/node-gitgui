@@ -18,7 +18,8 @@ function Layout(gitRepo, gitLog, mainTree) {
     resizerClass: "resizer",
     togglerClass: "toggler",
     buttonClass: "button",
-    hideTogglerOnSlide: true
+    hideTogglerOnSlide: true,
+    enableCursorHotkey: false
   };
 
   $('body').layout({
