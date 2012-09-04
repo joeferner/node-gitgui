@@ -61,6 +61,9 @@ DiffView.prototype.refresh = function (callback) {
   }
 
   function isImageFilename(filename) {
+    if (!filename) {
+      return false;
+    }
     return filename.match(/\.jpg$/) || filename.match(/\.png$/) || filename.match(/\.jpeg$/) || filename.match(/\.gif$/);
   }
 
