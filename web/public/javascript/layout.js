@@ -66,6 +66,7 @@ function Layout(gitRepo, gitLog, mainTree) {
 
   $('#toolbarRefresh').click(this.actionRefresh.bind(this));
   $('#toolbarCommit').click(this.localCommit.bind(this));
+  $('#toolbarStash').click(this.localStash.bind(this));
   $('#toolbarFetch').click(this.remoteFetch.bind(this));
   $('#toolbarPull').click(this.remotePull.bind(this));
   $('#toolbarPush').click(this.remotePush.bind(this));
@@ -87,6 +88,22 @@ function Layout(gitRepo, gitLog, mainTree) {
     }
   });
 
+  $('#stashDialog').dialog({
+    autoOpen: false,
+    modal: true,
+    height: 'auto',
+    width: 'auto',
+    open: function () {
+      $('#stashDialogMessage').focus().select();
+    },
+    buttons: {
+      "Cancel": function () {
+        $('#stashDialog').dialog('close');
+      },
+      "Stash": this.localStashDo.bind(this)
+    }
+  });
+
   activityTimer.add(this.refreshStatus.bind(this), {
     activityInterval: 10 * 1000, // 10seconds
     noActivityInterval: 1 * 60 * 60 * 1000 // 1hour
@@ -97,6 +114,25 @@ function Layout(gitRepo, gitLog, mainTree) {
 Layout.prototype.actionRefresh = function () {
   var self = this;
   self.refresh();
+};
+
+Layout.prototype.localStash = function () {
+  $('#stashDialog').dialog('open');
+};
+
+Layout.prototype.localStashDo = function () {
+  var self = this;
+  var stashName = $('#stashDialogMessage').val();
+  if (!stashName) {
+    return showMessage('You must specify a name.');
+  }
+  self.gitRepo.stash(stashName, function (err) {
+    if (err) {
+      return showError(err);
+    }
+    self.refresh(showError);
+    $('#stashDialog').dialog('close');
+  });
 };
 
 Layout.prototype.localCommit = function () {

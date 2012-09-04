@@ -31,7 +31,7 @@
               </h2>
 
               <div id="toolbarRefresh">
-                <img src="/image/view-refresh-3.png" alt="Refresh"/>
+                <img src="/image/toolbar-refresh.png" alt="Refresh"/>
                 Refresh
               </div>
             </li>
@@ -41,8 +41,12 @@
               </h2>
 
               <div id="toolbarCommit">
-                <img src="/image/dialog-apply.png" alt="Commit"/>
+                <img src="/image/toolbar-commit.png" alt="Commit"/>
                 Commit
+              </div>
+              <div id="toolbarStash">
+                <img src="/image/toolbar-stash.png" alt="Commit"/>
+                Stash
               </div>
             </li>
             <li>
@@ -51,15 +55,15 @@
               </h2>
 
               <div id="toolbarFetch">
-                <img src="/image/go-bottom-6.png" alt="Fetch"/>
+                <img src="/image/toolbar-fetch.png" alt="Fetch"/>
                 Fetch
               </div>
               <div id="toolbarPull">
-                <img src="/image/go-down-7.png" alt="Pull"/>
+                <img src="/image/toolbar-pull.png" alt="Pull"/>
                 Pull
               </div>
               <div id="toolbarPush">
-                <img src="/image/go-up-7.png" alt="Push"/>
+                <img src="/image/toolbar-push.png" alt="Push"/>
                 Push
               </div>
             </li>
@@ -137,6 +141,16 @@
     <div class="dialog-field-title">Commit Message:</div>
     <div class="dialog-field-value">
       <textarea id="commitDialogMessage" style="width: 600px; height: 200px;"></textarea>
+    </div>
+  </div>
+</div>
+
+<!-- stash dialog -->
+<div id="stashDialog" title="Stash" style="display: none;">
+  <div class="dialog-field">
+    <div class="dialog-field-title">Stash name:</div>
+    <div class="dialog-field-value">
+      <input id="stashDialogMessage" type="text" size="80" />
     </div>
   </div>
 </div>

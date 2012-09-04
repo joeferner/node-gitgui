@@ -100,6 +100,15 @@ GitRepo.prototype.stashPop = function (stashId, callback) {
   }).error(ajaxError.bind(null, 'stashPop'));
 };
 
+GitRepo.prototype.stash = function (stashName, callback) {
+  var data = {
+    name: stashName
+  };
+  $.post(this.createUrl('/stash/new?action=save'), data,function (data, textStatus) {
+    return callback(null, data);
+  }).error(ajaxError.bind(null, 'stash'));
+};
+
 GitRepo.prototype.commit = function (message, callback) {
   var data = {
     message: message
