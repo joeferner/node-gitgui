@@ -4,12 +4,13 @@ var sf = require('sf');
 var util = require("util");
 var events = require("events");
 
-module.exports = function (gitRepo, gitLog) {
-  return new FileView(gitRepo, gitLog);
+module.exports = function (main, gitRepo, gitLog) {
+  return new FileView(main, gitRepo, gitLog);
 };
 
-function FileView(gitRepo, gitLog) {
+function FileView(main, gitRepo, gitLog) {
   var self = this;
+  this.main = main;
   events.EventEmitter.call(this);
   this.gitRepo = gitRepo;
   this.gitLog = gitLog;
@@ -29,8 +30,47 @@ function FileView(gitRepo, gitLog) {
   });
   this.filesTable = $('#fileView').dataTable();
   $('#fileView_wrapper .fg-toolbar').hide();
+
+  $('#fileView').bind('contextmenu', function (e) {
+    e.preventDefault();
+    $(e.target).click();
+
+    var menu = {
+    };
+    var selectedLogRow = self.gitLog.getSelectedRow();
+    if (selectedLogRow && !selectedLogRow.id) {
+      menu.stage = {
+        label: 'Delete',
+        icon: '/image/context-delete.png',
+        action: function () {
+          var selectedFileName = self.getSelectedFilename();
+          if (main.confirm('Are you sure you want to delete "' + selectedFileName.filename + '"?')) {
+            return self.deleteLocalFile(selectedFileName.filename);
+          }
+        }
+      };
+    }
+
+    if (Object.keys(menu).length > 0) {
+      $.vakata.context.show(menu, $('#fileView'), e.pageX, e.pageY, this, $('#fileView'));
+    }
+    return false;
+  });
+
 }
 util.inherits(FileView, events.EventEmitter);
+
+FileView.prototype.deleteLocalFile = function (filename, callback) {
+  var self = this;
+  callback = callback || this.main.showError;
+  this.gitRepo.deleteLocalFile(filename, function (err) {
+    if (err) {
+      return callback(err);
+    }
+    self.main.refresh();
+    return callback();
+  })
+};
 
 FileView.prototype.getSelectedFilename = function () {
   var row = this.filesTable.$('tr.row_selected').get(0);

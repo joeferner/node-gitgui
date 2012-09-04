@@ -120,6 +120,13 @@ GitRepo.prototype.tag = function (commit, tagName, tagDescription, callback) {
   }).error(ajaxError.bind(null, 'tag'));
 };
 
+GitRepo.prototype.deleteLocalFile = function (filename, callback) {
+  filename = encodeURIComponent(filename);
+  $.post(this.createUrl('/local/' + filename + '?action=delete'),function (data, textStatus) {
+    return callback(null, data);
+  }).error(ajaxError.bind(null, 'deleteLocalFile'));
+};
+
 GitRepo.prototype.commit = function (message, callback) {
   var data = {
     message: message

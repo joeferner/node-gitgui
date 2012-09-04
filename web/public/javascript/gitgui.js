@@ -25,15 +25,23 @@ $(function () {
   document.title = 'NodeGitGui - ' + repoPath;
 
   var main = {
-    refresh: function () {
-      layout.refresh();
-    }
+    showError: showError,
+    showMessage: showMessage,
+    escapeHtml: escapeHtml
   };
+
+  main.refresh = function () {
+    main.layout.refresh();
+  };
+
+  main.confirm = function (message) {
+    return window.confirm(message);
+  }
 
   main.gitRepo = require('../web/public/javascript/gitRepo')(repoPath);
   main.gitLog = require('../web/public/javascript/gitLog')(main.gitRepo);
   main.mainTree = require('../web/public/javascript/mainTree')(main, main.gitRepo);
-  main.fileView = require('../web/public/javascript/fileView')(main.gitRepo, main.gitLog);
+  main.fileView = require('../web/public/javascript/fileView')(main, main.gitRepo, main.gitLog);
   main.diffView = require('../web/public/javascript/diffView')(main.gitRepo, main.fileView);
   main.layout = require('../web/public/javascript/layout')(main.gitRepo, main.gitLog, main.mainTree);
 });
