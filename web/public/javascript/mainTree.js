@@ -7,13 +7,16 @@ module.exports = function (gitRepo) {
 function MainTree(gitRepo) {
   this.gitRepo = gitRepo;
   this.tree = $('#mainTree').jstree({
-    plugins: ["themes", "json_data", "ui", "crrm"],
+    plugins: ["themes", "json_data", "ui", "crrm", "contextmenu"],
     themes: {
       dots: false,
       url: '/css/jstree/default/style.css'
     },
     json_data: {
       data: this.getTreeData.bind(this)
+    },
+    contextmenu: {
+      items: this.onMainTreeContextMenu.bind(this)
     }
   });
 
@@ -127,4 +130,9 @@ MainTree.prototype.loadStashes = function (node, callback) {
       data: stash.message
     };
   }
+};
+
+MainTree.prototype.onMainTreeContextMenu = function (node) {
+  var nodeId = $(node).attr('id');
+  console.log('tree node context menu:', nodeId);
 };
