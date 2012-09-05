@@ -31,6 +31,7 @@ $(function () {
   };
 
   main.showLoading = function (message) {
+    console.log('showLoading', message);
     message = message || 'Loading...';
     $('#loadingMessage').html(message);
     $('#loadingDialog').dialog('open');
@@ -38,6 +39,7 @@ $(function () {
   };
 
   main.hideLoading = function () {
+    console.log('hideLoading');
     $('#loadingDialog').dialog('close');
   };
 
