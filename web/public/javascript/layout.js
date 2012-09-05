@@ -1,6 +1,7 @@
 'use strict';
 
 var async = require('async');
+var sf = require('sf');
 var activityTimer = require('../web/public/javascript/activityTimer');
 
 module.exports = function (main, gitRepo, gitLog, mainTree) {
@@ -281,6 +282,7 @@ Layout.prototype.remotePush = function () {
 };
 
 Layout.prototype.refreshStatus = function (callback) {
+  var self = this;
   callback = callback || function () {};
   this.gitRepo.getStatus(function (err, status) {
     positionCount('#toolbarPull', '#toolbarPullCount');
@@ -293,9 +295,11 @@ Layout.prototype.refreshStatus = function (callback) {
       return callback(err);
     }
 
+    var pendingPullsStr = '';
     if (status.behindBy === 0) {
       $('#toolbarPullCount').hide();
     } else {
+      pendingPullsStr = '(' + status.behindBy + ') ';
       $('#toolbarPullCount').html(status.behindBy);
       $('#toolbarPullCount').show();
     }
@@ -306,6 +310,8 @@ Layout.prototype.refreshStatus = function (callback) {
       $('#toolbarPushCount').html(status.aheadBy);
       $('#toolbarPushCount').show();
     }
+
+    document.title = sf('{0}NodeGitGui - {1} ({2})', pendingPullsStr, self.gitRepo.repoPath, status.currentBranch);
 
     return callback();
   });
