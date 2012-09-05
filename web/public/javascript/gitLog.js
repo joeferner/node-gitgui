@@ -54,7 +54,6 @@ GitLog.prototype.showContextMenu = function (e) {
             return callback(err);
           }
           self.main.refresh();
-          return callback();
         });
       }
     }
