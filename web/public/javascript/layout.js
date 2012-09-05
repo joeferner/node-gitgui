@@ -216,16 +216,25 @@ Layout.prototype.localCommitAndPushDo = function () {
   if (!commitMessage) {
     return showMessage('You must specify a message.');
   }
+  self.main.showLoading('Committing...');
   self.gitRepo.commit(commitMessage, function (err) {
     if (err) {
+      self.main.hideLoading();
       return showError(err);
     }
+    self.main.showLoading('Pushing...');
     self.gitRepo.push(function (err) {
       if (err) {
+        self.main.hideLoading();
         return showError(err);
       }
-      self.refresh(showError);
-      $('#commitDialog').dialog('close');
+      self.refresh(function (err) {
+        self.main.hideLoading();
+        if (err) {
+          return showError(err);
+        }
+        $('#commitDialog').dialog('close');
+      });
     });
   });
 };
