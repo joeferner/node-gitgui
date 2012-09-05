@@ -194,14 +194,14 @@ Layout.prototype.localCommitDo = function () {
   if (!commitMessage) {
     return showMessage('You must specify a message.');
   }
-  self.showLoading('Committing...');
+  self.main.showLoading('Committing...');
   self.gitRepo.commit(commitMessage, function (err) {
     if (err) {
-      self.hideLoading();
+      self.main.hideLoading();
       return showError(err);
     }
     self.refresh(function (err) {
-      self.hideLoading();
+      self.main.hideLoading();
       if (err) {
         return showError(err);
       }
