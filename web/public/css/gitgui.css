@@ -27,6 +27,10 @@
   position: absolute;
 }
 
+.gitLog-currentCommit {
+  font-weight: bold;
+}
+
 .commitInfo-fieldTitle {
   font-weight: bold;
 }

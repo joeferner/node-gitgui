@@ -90,7 +90,12 @@ GitLog.prototype.refresh = function (callback) {
     }
     createGraphHtml(logs);
     var logRows = logs.map(toTableRow);
-    self.dataTable.fnAddData(logRows);
+    var addedRowIdxs = self.dataTable.fnAddData(logRows);
+    var currentCommitIdx = getCurrentCommitIdx(logs);
+    if (currentCommitIdx !== null) {
+      var tr = self.dataTable.fnGetNodes(addedRowIdxs[currentCommitIdx]);
+      $(tr).addClass('gitLog-currentCommit');
+    }
 
     $("#gitLog tbody tr").click(function (e) {
       self.dataTable.$('tr.row_selected').removeClass('row_selected');
@@ -103,6 +108,16 @@ GitLog.prototype.refresh = function (callback) {
     $("#gitLog tbody tr").first().click();
     return callback();
   });
+
+  function getCurrentCommitIdx(logs) {
+    var currentCommitIdx = null;
+    logs.forEach(function (l, idx) {
+      if (l.currentCommit) {
+        currentCommitIdx = idx;
+      }
+    });
+    return currentCommitIdx;
+  }
 
   function toTableRow(log) {
     log.message = log.message.replace(/\n/g, ' ');
