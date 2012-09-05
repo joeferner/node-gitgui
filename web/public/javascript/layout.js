@@ -8,7 +8,6 @@ module.exports = function (main, gitRepo, gitLog, mainTree) {
 };
 
 function Layout(main, gitRepo, gitLog, mainTree) {
-  var self = this;
   this.main = main;
   this.gitRepo = gitRepo;
   this.gitLog = gitLog;
@@ -125,7 +124,7 @@ function Layout(main, gitRepo, gitLog, mainTree) {
 
   activityTimer.add(this.refreshStatus.bind(this), {
     activityInterval: 10 * 1000, // 10seconds
-    noActivityInterval: 1 * 60 * 60 * 1000 // 1hour
+    noActivityInterval: 60 * 60 * 1000 // 1hour
   });
   this.refreshStatus();
 }
@@ -146,21 +145,27 @@ Layout.prototype.localStashDo = function () {
   var self = this;
   var stashName = $('#stashDialogMessage').val();
   if (!stashName) {
-    return showMessage('You must specify a name.');
+    return self.main.showMessage('You must specify a name.');
   }
+  self.main.showLoading('Stashing...');
   self.gitRepo.stash(stashName, function (err) {
     if (err) {
-      return showError(err);
+      return self.main.hideLoadingAndShowError(err);
     }
-    self.refresh(showError);
-    $('#stashDialog').dialog('close');
+    self.refresh(function (err) {
+      if (err) {
+        return self.main.hideLoadingAndShowError(err);
+      }
+      self.main.hideLoading();
+      $('#stashDialog').dialog('close');
+    });
   });
 };
 
 Layout.prototype.localTag = function () {
   var selectRow = this.gitLog.getSelectedRow();
   if (!selectRow || !selectRow.id) {
-    return showMessage("Invalid commit selected to tag.");
+    return this.main.showMessage("Invalid commit selected to tag.");
   }
   $('#tagDialogCommitId').val(selectRow.id);
   $('#tagDialogCommit').html(selectRow.id + ' - ' + selectRow.message);
@@ -173,14 +178,20 @@ Layout.prototype.localTagDo = function () {
   var tagName = $('#tagDialogName').val();
   var tagDescription = $('#tagDialogDescription').val();
   if (!tagName) {
-    return showMessage('You must specify a name.');
+    return self.main.showMessage('You must specify a name.');
   }
+  self.main.showLoading('Tagging...');
   self.gitRepo.tag(commitId, tagName, tagDescription, function (err) {
     if (err) {
-      return showError(err);
+      return self.main.hideLoadingAndShowError(err);
     }
-    self.refresh(showError);
-    $('#tagDialog').dialog('close');
+    self.refresh(function (err) {
+      if (err) {
+        return self.main.hideLoadingAndShowError(err);
+      }
+      self.main.hideLoading();
+      $('#tagDialog').dialog('close');
+    });
   });
 };
 
@@ -192,18 +203,17 @@ Layout.prototype.localCommitDo = function () {
   var self = this;
   var commitMessage = $('#commitDialogMessage').val();
   if (!commitMessage) {
-    return showMessage('You must specify a message.');
+    return self.main.showMessage('You must specify a message.');
   }
   self.main.showLoading('Committing...');
   self.gitRepo.commit(commitMessage, function (err) {
     if (err) {
-      self.main.hideLoading();
-      return showError(err);
+      return self.main.hideLoadingAndShowError(err);
     }
     self.refresh(function (err) {
       self.main.hideLoading();
       if (err) {
-        return showError(err);
+        return self.main.hideLoadingAndShowError(err);
       }
       $('#commitDialog').dialog('close');
     });
@@ -214,24 +224,22 @@ Layout.prototype.localCommitAndPushDo = function () {
   var self = this;
   var commitMessage = $('#commitDialogMessage').val();
   if (!commitMessage) {
-    return showMessage('You must specify a message.');
+    return self.main.showMessage('You must specify a message.');
   }
   self.main.showLoading('Committing...');
   self.gitRepo.commit(commitMessage, function (err) {
     if (err) {
-      self.main.hideLoading();
-      return showError(err);
+      return self.main.hideLoadingAndShowError(err);
     }
     self.main.showLoading('Pushing...');
     self.gitRepo.push(function (err) {
       if (err) {
-        self.main.hideLoading();
-        return showError(err);
+        return self.main.hideLoadingAndShowError(err);
       }
       self.refresh(function (err) {
         self.main.hideLoading();
         if (err) {
-          return showError(err);
+          return self.main.hideLoadingAndShowError(err);
         }
         $('#commitDialog').dialog('close');
       });
@@ -241,31 +249,34 @@ Layout.prototype.localCommitAndPushDo = function () {
 
 Layout.prototype.remoteFetch = function () {
   var self = this;
+  self.main.showLoading('Fetching...');
   self.gitRepo.fetch(function (err) {
     if (err) {
-      return showError(err);
+      return self.main.hideLoadingAndShowError(err);
     }
-    self.refresh(showError);
+    self.refresh(self.main.hideLoadingAndShowError);
   });
 };
 
 Layout.prototype.remotePull = function () {
   var self = this;
+  self.main.showLoading('Pulling...');
   self.gitRepo.pull(function (err) {
     if (err) {
-      return showError(err);
+      return self.main.hideLoadingAndShowError(err);
     }
-    self.refresh(showError);
+    self.refresh(self.main.hideLoadingAndShowError);
   });
 };
 
 Layout.prototype.remotePush = function () {
   var self = this;
+  self.main.showLoading('Pushing...');
   self.gitRepo.push(function (err) {
     if (err) {
-      return showError(err);
+      return self.main.hideLoadingAndShowError(err);
     }
-    self.refresh(showError);
+    self.refresh(self.main.hideLoadingAndShowError);
   });
 };
 

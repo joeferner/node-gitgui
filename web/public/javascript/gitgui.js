@@ -30,6 +30,13 @@ $(function () {
     escapeHtml: escapeHtml
   };
 
+  main.hideLoadingAndShowError = function (err) {
+    main.hideLoading();
+    if (err) {
+      return main.showError(err);
+    }
+  };
+
   main.showLoading = function (message) {
     message = message || 'Loading...';
     $('#loadingMessage').html(message);
