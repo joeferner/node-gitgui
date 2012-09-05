@@ -98,11 +98,18 @@ GitLog.prototype.checkoutCommit = function (commitId, callback) {
 };
 
 GitLog.prototype.checkoutCommitWithBranchName = function () {
+  var self = this;
   var commitId = $('#checkoutDialogCommitId').val();
   var newBranchName = $('#checkoutDialogNewBranchName').val();
-  this.main.showLoading('Checking out...');
-  var callback = this.checkoutCommitCallback || this.main.hideLoadingAndShowError;
-  return this.gitRepo.checkout(commitId, newBranchName, callback);
+  self.main.showLoading('Checking out...');
+  var callback = self.checkoutCommitCallback || this.main.hideLoadingAndShowError;
+  return self.gitRepo.checkout(commitId, newBranchName, function (err) {
+    if (err) {
+      return self.main.hideLoadingAndShowError(err);
+    }
+    $('#checkoutDialog').dialog('close');
+    return callback();
+  });
 };
 
 GitLog.prototype.getSelectedRow = function () {
