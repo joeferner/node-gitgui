@@ -63,7 +63,7 @@ FileView.prototype.showContextMenu = function (e) {
 
 FileView.prototype.deleteLocalFile = function (filename, callback) {
   var self = this;
-  callback = callback || this.main.showError;
+  callback = callback || this.main.hideLoadingAndShowError;
   this.gitRepo.deleteLocalFile(filename, function (err) {
     if (err) {
       return callback(err);
@@ -88,7 +88,7 @@ FileView.prototype.getSelectedFilename = function () {
 
 FileView.prototype.refresh = function (callback) {
   var self = this;
-  callback = callback || showError;
+  callback = callback || this.main.hideLoadingAndShowError;
   var row = this.gitLog.getSelectedRow();
   this.filesTable.fnClearTable();
 
@@ -150,7 +150,7 @@ FileView.prototype.refresh = function (callback) {
     var fnName = isStaged ? 'reset' : 'stage';
     self.gitRepo[fnName](filename, function (err) {
       if (err) {
-        return showError(err);
+        return self.main.hideLoadingAndShowError(err);
       }
       self.filesTable.fnUpdate(newValue, row, 1)
     });

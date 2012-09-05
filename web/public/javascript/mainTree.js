@@ -100,7 +100,7 @@ MainTree.prototype.loadBranches = function (node, callback) {
   var self = this;
   this.gitRepo.getBranches(function (err, branches) {
     if (err) {
-      return showError(err);
+      return self.main.hideLoadingAndShowError(err);
     }
     var branchNodes = branches.map(toTreeNode);
     return callback(branchNodes)
@@ -122,7 +122,7 @@ MainTree.prototype.loadTags = function (node, callback) {
   var self = this;
   this.gitRepo.getTags(function (err, tags) {
     if (err) {
-      return showError(err);
+      return self.main.hideLoadingAndShowError(err);
     }
     var tagNodes = tags.map(toTreeNode);
     return callback(tagNodes)
@@ -143,7 +143,7 @@ MainTree.prototype.loadStashes = function (node, callback) {
   var self = this;
   this.gitRepo.getStashes(function (err, stashes) {
     if (err) {
-      return showError(err);
+      return self.main.hideLoadingAndShowError(err);
     }
     var stashNodes = stashes.map(toTreeNode);
     return callback(stashNodes)
@@ -213,7 +213,7 @@ MainTree.prototype.stashPop = function (stashId) {
   var self = this;
   this.gitRepo.stashPop(stashId, function (err) {
     if (err) {
-      return showError(err);
+      return self.main.hideLoadingAndShowError(err);
     }
     self.main.refresh();
   });

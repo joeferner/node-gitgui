@@ -3,12 +3,13 @@
 var sf = require('sf');
 var diffParse = require("../lib/diffParse");
 
-module.exports = function (gitRepo, fileView) {
-  return new DiffView(gitRepo, fileView);
+module.exports = function (main, gitRepo, fileView) {
+  return new DiffView(main, gitRepo, fileView);
 };
 
-function DiffView(gitRepo, fileView) {
+function DiffView(main, gitRepo, fileView) {
   var self = this;
+  this.main = main;
   this.gitRepo = gitRepo;
   this.fileView = fileView;
 
@@ -20,7 +21,7 @@ function DiffView(gitRepo, fileView) {
 DiffView.prototype.refresh = function (callback) {
   var self = this;
   $('#diff').parent().scrollTop(0);
-  callback = callback || showError;
+  callback = callback || self.main.hideLoadingAndShowError;
   var commitId = this.fileView.commitId;
   var row = this.fileView.getSelectedFilename();
   if (!row || !row.filename) {

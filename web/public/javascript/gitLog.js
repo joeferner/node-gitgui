@@ -121,7 +121,7 @@ GitLog.prototype.getSelectedRow = function () {
 
 GitLog.prototype.refresh = function (callback) {
   var self = this;
-  callback = callback || showError;
+  callback = callback || this.main.hideLoadingAndShowError;
   this.dataTable.fnClearTable();
 
   this.gitRepo.getLog(function (err, logs) {

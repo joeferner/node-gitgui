@@ -326,7 +326,7 @@ function positionCount(forSelector, countSelector) {
 }
 
 Layout.prototype.refresh = function (callback) {
-  callback = callback || showError;
+  callback = callback || this.main.hideLoadingAndShowError;
   async.parallel([
     this.mainTree.refresh.bind(this.mainTree),
     this.gitLog.refresh.bind(this.gitLog),

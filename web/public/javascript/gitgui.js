@@ -64,11 +64,11 @@ $(function () {
     return window.confirm(message);
   };
 
-  main.gitRepo = require('../web/public/javascript/gitRepo')(repoPath);
+  main.gitRepo = require('../web/public/javascript/gitRepo')(main, repoPath);
   main.gitLog = require('../web/public/javascript/gitLog')(main, main.gitRepo);
   main.mainTree = require('../web/public/javascript/mainTree')(main, main.gitRepo);
   main.fileView = require('../web/public/javascript/fileView')(main, main.gitRepo, main.gitLog);
-  main.diffView = require('../web/public/javascript/diffView')(main.gitRepo, main.fileView);
+  main.diffView = require('../web/public/javascript/diffView')(main, main.gitRepo, main.fileView);
   main.layout = require('../web/public/javascript/layout')(main, main.gitRepo, main.gitLog, main.mainTree);
 
   // the mainTree will already be loading so no need to call refresh on that
