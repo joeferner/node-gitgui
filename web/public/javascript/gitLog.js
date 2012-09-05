@@ -31,8 +31,6 @@ function GitLog(main, gitRepo) {
   this.dataTable = $('#gitLog').dataTable();
   $('#gitLog_wrapper .fg-toolbar').hide();
   $('#gitLog').bind('contextmenu', this.showContextMenu.bind(this));
-
-  this.refresh();
 }
 util.inherits(GitLog, events.EventEmitter);
 

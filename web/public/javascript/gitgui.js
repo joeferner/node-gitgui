@@ -30,8 +30,27 @@ $(function () {
     escapeHtml: escapeHtml
   };
 
-  main.refresh = function () {
-    main.layout.refresh();
+  main.showLoading = function (message) {
+    message = message || 'Loading...';
+    $('#loadingMessage').html(message);
+    $('#loadingDialog').dialog('open');
+    $('#loadingDialog').dialog('widget').find(".ui-dialog-titlebar").hide();
+  };
+
+  main.hideLoading = function () {
+    $('#loadingDialog').dialog('close');
+  };
+
+  $('#loadingDialog').dialog({
+    autoOpen: false,
+    modal: true,
+    height: 'auto',
+    width: 'auto',
+    resizable: false
+  });
+
+  main.refresh = function (callback) {
+    main.layout.refresh(callback);
   };
 
   main.confirm = function (message) {
@@ -44,6 +63,12 @@ $(function () {
   main.fileView = require('../web/public/javascript/fileView')(main, main.gitRepo, main.gitLog);
   main.diffView = require('../web/public/javascript/diffView')(main.gitRepo, main.fileView);
   main.layout = require('../web/public/javascript/layout')(main.gitRepo, main.gitLog, main.mainTree);
+
+  // the mainTree will already be loading so no need to call refresh on that
+  main.showLoading();
+  main.gitLog.refresh(function () {
+    main.hideLoading();
+  });
 });
 
 function getRepoPath() {

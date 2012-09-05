@@ -140,3 +140,16 @@
   -moz-box-shadow: inset 0px -10px 15px rgba(50, 50, 50, 0.2), inset 0px 10px 15px rgba(50, 50, 50, 0.2);
   box-shadow: inset 0px -10px 15px rgba(50, 50, 50, 0.2), inset 0px 10px 15px rgba(50, 50, 50, 0.2);
 }
+
+#loadingDialog {
+  min-height: inherit !important;
+}
+
+#loadingDialog img {
+  vertical-align: middle;
+}
+
+#loadingMessage {
+  margin-left: 10px;
+  vertical-align: middle;
+}

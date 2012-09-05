@@ -164,8 +164,35 @@ MainTree.prototype.onMainTreeContextMenu = function (node) {
   var nodeId = $(node).attr('id');
   if (nodeId.indexOf('mainTreeStash_') === 0) {
     return this.onMainTreeContextMenuStash(nodeId.substr('mainTreeStash_'.length));
+  } else if (nodeId.indexOf('mainTreeBranch_') === 0) {
+    return this.onMainTreeContextMenuBranch(nodeId.substr('mainTreeBranch_'.length));
   } else {
     console.log('unhandled tree node context menu:', nodeId);
+  }
+};
+
+MainTree.prototype.onMainTreeContextMenuBranch = function (branchId) {
+  var self = this;
+  return {
+    pop: {
+      label: "Checkout",
+      action: function () {
+        self.main.showLoading('Checking out ' + branchId + '...');
+        doCheckout(function () {
+          self.main.hideLoading();
+        })
+      },
+      icon: "/image/context-checkout.png"
+    }
+  };
+
+  function doCheckout(callback) {
+    self.gitRepo.checkout(branchId, function (err) {
+      if (err) {
+        return callback(err);
+      }
+      return self.main.refresh(callback);
+    });
   }
 };
 
