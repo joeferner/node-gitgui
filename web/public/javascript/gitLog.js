@@ -4,12 +4,13 @@ var sf = require('sf');
 var util = require("util");
 var events = require("events");
 
-module.exports = function (gitRepo) {
-  return new GitLog(gitRepo);
+module.exports = function (main, gitRepo) {
+  return new GitLog(main, gitRepo);
 };
 
-function GitLog(gitRepo) {
+function GitLog(main, gitRepo) {
   events.EventEmitter.call(this);
+  this.main = main;
   this.gitRepo = gitRepo;
   $('#gitLog').dataTable({
     bJQueryUI: true,
@@ -29,10 +30,40 @@ function GitLog(gitRepo) {
   });
   this.dataTable = $('#gitLog').dataTable();
   $('#gitLog_wrapper .fg-toolbar').hide();
+  $('#gitLog').bind('contextmenu', this.showContextMenu.bind(this));
 
   this.refresh();
 }
 util.inherits(GitLog, events.EventEmitter);
+
+GitLog.prototype.showContextMenu = function (e) {
+  var self = this;
+  e.preventDefault();
+  $(e.target).click();
+
+  var selectedLogRow = self.getSelectedRow();
+  if (!selectedLogRow || !selectedLogRow.id) {
+    return false;
+  }
+
+  var menu = {
+    'checkout': {
+      label: 'Checkout',
+      icon: '/image/context-checkout.png',
+      action: function () {
+        this.gitRepo.checkout(selectedLogRow.id, function (err) {
+          if (err) {
+            return callback(err);
+          }
+          self.main.refresh();
+          return callback();
+        });
+      }
+    }
+  };
+  $.vakata.context.show(menu, $('#gitLog'), e.pageX, e.pageY, this, $('#gitLog'));
+  return false;
+};
 
 GitLog.prototype.getSelectedRow = function () {
   var row = this.dataTable.$('tr.row_selected').get(0);

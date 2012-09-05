@@ -30,35 +30,36 @@ function FileView(main, gitRepo, gitLog) {
   });
   this.filesTable = $('#fileView').dataTable();
   $('#fileView_wrapper .fg-toolbar').hide();
-
-  $('#fileView').bind('contextmenu', function (e) {
-    e.preventDefault();
-    $(e.target).click();
-
-    var menu = {
-    };
-    var selectedLogRow = self.gitLog.getSelectedRow();
-    if (selectedLogRow && !selectedLogRow.id) {
-      menu.stage = {
-        label: 'Delete',
-        icon: '/image/context-delete.png',
-        action: function () {
-          var selectedFileName = self.getSelectedFilename();
-          if (main.confirm('Are you sure you want to delete "' + selectedFileName.filename + '"?')) {
-            return self.deleteLocalFile(selectedFileName.filename);
-          }
-        }
-      };
-    }
-
-    if (Object.keys(menu).length > 0) {
-      $.vakata.context.show(menu, $('#fileView'), e.pageX, e.pageY, this, $('#fileView'));
-    }
-    return false;
-  });
-
+  $('#fileView').bind('contextmenu', this.showContextMenu.bind(this));
 }
 util.inherits(FileView, events.EventEmitter);
+
+FileView.prototype.showContextMenu = function (e) {
+  var self = this;
+  e.preventDefault();
+  $(e.target).click();
+
+  var menu = {
+  };
+  var selectedLogRow = self.gitLog.getSelectedRow();
+  if (selectedLogRow && !selectedLogRow.id) {
+    menu.stage = {
+      label: 'Delete',
+      icon: '/image/context-delete.png',
+      action: function () {
+        var selectedFileName = self.getSelectedFilename();
+        if (self.main.confirm('Are you sure you want to delete "' + selectedFileName.filename + '"?')) {
+          return self.deleteLocalFile(selectedFileName.filename);
+        }
+      }
+    };
+  }
+
+  if (Object.keys(menu).length > 0) {
+    $.vakata.context.show(menu, $('#fileView'), e.pageX, e.pageY, this, $('#fileView'));
+  }
+  return false;
+};
 
 FileView.prototype.deleteLocalFile = function (filename, callback) {
   var self = this;
@@ -69,7 +70,7 @@ FileView.prototype.deleteLocalFile = function (filename, callback) {
     }
     self.main.refresh();
     return callback();
-  })
+  });
 };
 
 FileView.prototype.getSelectedFilename = function () {

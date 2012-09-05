@@ -39,7 +39,7 @@ $(function () {
   };
 
   main.gitRepo = require('../web/public/javascript/gitRepo')(repoPath);
-  main.gitLog = require('../web/public/javascript/gitLog')(main.gitRepo);
+  main.gitLog = require('../web/public/javascript/gitLog')(main, main.gitRepo);
   main.mainTree = require('../web/public/javascript/mainTree')(main, main.gitRepo);
   main.fileView = require('../web/public/javascript/fileView')(main, main.gitRepo, main.gitLog);
   main.diffView = require('../web/public/javascript/diffView')(main.gitRepo, main.fileView);

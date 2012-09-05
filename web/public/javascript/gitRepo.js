@@ -127,6 +127,13 @@ GitRepo.prototype.deleteLocalFile = function (filename, callback) {
   }).error(ajaxError.bind(null, 'deleteLocalFile'));
 };
 
+GitRepo.prototype.checkout = function (commit, callback) {
+  commit = encodeURIComponent(commit);
+  $.post(this.createUrl('/git/checkout/' + commit),function (data, textStatus) {
+    return callback(null, data);
+  }).error(ajaxError.bind(null, 'checkout'));
+};
+
 GitRepo.prototype.commit = function (message, callback) {
   var data = {
     message: message
