@@ -132,7 +132,7 @@ function Layout(main, gitRepo, gitLog, mainTree) {
 Layout.prototype.actionRefresh = function () {
   var self = this;
   self.main.showLoading("Refreshing...");
-  self.refresh(function () {
+  self.main.refresh(function () {
     self.main.hideLoading();
   });
 };
@@ -152,7 +152,7 @@ Layout.prototype.localStashDo = function () {
     if (err) {
       return self.main.hideLoadingAndShowError(err);
     }
-    self.refresh(function (err) {
+    self.main.refresh(function (err) {
       if (err) {
         return self.main.hideLoadingAndShowError(err);
       }
@@ -185,7 +185,7 @@ Layout.prototype.localTagDo = function () {
     if (err) {
       return self.main.hideLoadingAndShowError(err);
     }
-    self.refresh(function (err) {
+    self.main.refresh(function (err) {
       if (err) {
         return self.main.hideLoadingAndShowError(err);
       }
@@ -210,7 +210,7 @@ Layout.prototype.localCommitDo = function () {
     if (err) {
       return self.main.hideLoadingAndShowError(err);
     }
-    self.refresh(function (err) {
+    self.main.refresh(function (err) {
       self.main.hideLoading();
       if (err) {
         return self.main.hideLoadingAndShowError(err);
@@ -236,7 +236,7 @@ Layout.prototype.localCommitAndPushDo = function () {
       if (err) {
         return self.main.hideLoadingAndShowError(err);
       }
-      self.refresh(function (err) {
+      self.main.refresh(function (err) {
         self.main.hideLoading();
         if (err) {
           return self.main.hideLoadingAndShowError(err);
@@ -254,7 +254,7 @@ Layout.prototype.remoteFetch = function () {
     if (err) {
       return self.main.hideLoadingAndShowError(err);
     }
-    self.refresh(self.main.hideLoadingAndShowError);
+    self.main.refresh(self.main.hideLoadingAndShowError);
   });
 };
 
@@ -265,7 +265,7 @@ Layout.prototype.remotePull = function () {
     if (err) {
       return self.main.hideLoadingAndShowError(err);
     }
-    self.refresh(self.main.hideLoadingAndShowError);
+    self.main.refresh(self.main.hideLoadingAndShowError);
   });
 };
 
@@ -276,7 +276,7 @@ Layout.prototype.remotePush = function () {
     if (err) {
       return self.main.hideLoadingAndShowError(err);
     }
-    self.refresh(self.main.hideLoadingAndShowError);
+    self.main.refresh(self.main.hideLoadingAndShowError);
   });
 };
 
