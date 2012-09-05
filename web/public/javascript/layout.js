@@ -3,12 +3,13 @@
 var async = require('async');
 var activityTimer = require('../web/public/javascript/activityTimer');
 
-module.exports = function (gitRepo, gitLog, mainTree) {
-  return new Layout(gitRepo, gitLog, mainTree);
+module.exports = function (main, gitRepo, gitLog, mainTree) {
+  return new Layout(main, gitRepo, gitLog, mainTree);
 };
 
-function Layout(gitRepo, gitLog, mainTree) {
+function Layout(main, gitRepo, gitLog, mainTree) {
   var self = this;
+  this.main = main;
   this.gitRepo = gitRepo;
   this.gitLog = gitLog;
   this.mainTree = mainTree;
@@ -131,7 +132,10 @@ function Layout(gitRepo, gitLog, mainTree) {
 
 Layout.prototype.actionRefresh = function () {
   var self = this;
-  self.refresh();
+  self.main.showLoading("Refreshing...");
+  self.refresh(function () {
+    self.main.hideLoading();
+  });
 };
 
 Layout.prototype.localStash = function () {
@@ -190,12 +194,19 @@ Layout.prototype.localCommitDo = function () {
   if (!commitMessage) {
     return showMessage('You must specify a message.');
   }
+  self.showLoading('Committing...');
   self.gitRepo.commit(commitMessage, function (err) {
     if (err) {
+      self.hideLoading();
       return showError(err);
     }
-    self.refresh(showError);
-    $('#commitDialog').dialog('close');
+    self.refresh(function (err) {
+      self.hideLoading();
+      if (err) {
+        return showError(err);
+      }
+      $('#commitDialog').dialog('close');
+    });
   });
 };
 
