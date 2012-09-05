@@ -21,6 +21,7 @@
     "browserify": "~1.15.3",
     "nodegit": "0.0.6",
     "async": "~0.1.22",
-    "stream-buffers": "~0.2.3"
+    "stream-buffers": "~0.2.3",
+    "openport": "0.0.3"
   }
 }
