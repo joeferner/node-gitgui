@@ -65,12 +65,12 @@ GitLog.prototype.showContextMenu = function (e) {
 
 GitLog.prototype.checkoutCommit = function (commitId, callback) {
   var self = this;
-  self.gitRepo.getCommitInfo(commitId, function (err, name) {
+  self.gitRepo.getCommitInfo(commitId, function (err, commitInfo) {
     if (err) {
       return callback(err);
     }
-    if (name && name.indexOf('~') < 0) {
-      commitId = name;
+    if (commitInfo && commitInfo.symbolicName && commitInfo.symbolicName.indexOf('~') < 0) {
+      commitId = commitInfo.symbolicName;
     }
     self.gitRepo.checkout(commitId, callback);
   });
