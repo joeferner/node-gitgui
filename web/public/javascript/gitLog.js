@@ -49,7 +49,7 @@ GitLog.prototype.showContextMenu = function (e) {
       label: 'Checkout',
       icon: '/image/context-checkout.png',
       action: function () {
-        this.gitRepo.checkout(selectedLogRow.id, function (err) {
+        self.checkoutCommit(selectedLogRow.id, function (err) {
           if (err) {
             return callback(err);
           }
@@ -61,6 +61,19 @@ GitLog.prototype.showContextMenu = function (e) {
   };
   $.vakata.context.show(menu, $('#gitLog'), e.pageX, e.pageY, this, $('#gitLog'));
   return false;
+};
+
+GitLog.prototype.checkoutCommit = function (commitId, callback) {
+  var self = this;
+  self.gitRepo.getCommitInfo(commitId, function (err, name) {
+    if (err) {
+      return callback(err);
+    }
+    if (name && name.indexOf('~') < 0) {
+      commitId = name;
+    }
+    self.gitRepo.checkout(commitId, callback);
+  });
 };
 
 GitLog.prototype.getSelectedRow = function () {
