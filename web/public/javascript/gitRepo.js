@@ -127,9 +127,12 @@ GitRepo.prototype.deleteLocalFile = function (filename, callback) {
   }).error(ajaxError.bind(null, 'deleteLocalFile'));
 };
 
-GitRepo.prototype.checkout = function (commit, callback) {
+GitRepo.prototype.checkout = function (commit, newBranchName, callback) {
   commit = encodeURIComponent(commit);
-  $.post(this.createUrl('/git/checkout/' + commit),function (data, textStatus) {
+  var data = {
+    newBranchName: newBranchName
+  };
+  $.post(this.createUrl('/git/checkout/' + commit), data,function (data, textStatus) {
     return callback(null, data);
   }).error(ajaxError.bind(null, 'checkout'));
 };

@@ -187,7 +187,7 @@ MainTree.prototype.onMainTreeContextMenuBranch = function (branchId) {
   };
 
   function doCheckout(callback) {
-    self.gitRepo.checkout(branchId, function (err) {
+    self.gitRepo.checkout(branchId, null, function (err) {
       if (err) {
         return callback(err);
       }

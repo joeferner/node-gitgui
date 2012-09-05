@@ -31,6 +31,22 @@ function GitLog(main, gitRepo) {
   this.dataTable = $('#gitLog').dataTable();
   $('#gitLog_wrapper .fg-toolbar').hide();
   $('#gitLog').bind('contextmenu', this.showContextMenu.bind(this));
+
+  $('#checkoutDialog').dialog({
+    autoOpen: false,
+    modal: true,
+    height: 'auto',
+    width: 'auto',
+    open: function () {
+      $('#checkoutDialogNewBranchName').focus().select();
+    },
+    buttons: {
+      "Cancel": function () {
+        $('#checkoutDialog').dialog('close');
+      },
+      "Checkout": this.checkoutCommitWithBranchName.bind(this)
+    }
+  });
 }
 util.inherits(GitLog, events.EventEmitter);
 
@@ -49,11 +65,12 @@ GitLog.prototype.showContextMenu = function (e) {
       label: 'Checkout',
       icon: '/image/context-checkout.png',
       action: function () {
+        self.main.showLoading('Checking out...');
         self.checkoutCommit(selectedLogRow.id, function (err) {
           if (err) {
-            return callback(err);
+            return self.main.hideLoadingAndShowError(err);
           }
-          self.main.refresh();
+          self.main.refresh(self.main.hideLoadingAndShowError);
         });
       }
     }
@@ -70,9 +87,22 @@ GitLog.prototype.checkoutCommit = function (commitId, callback) {
     }
     if (commitInfo && commitInfo.symbolicName && commitInfo.symbolicName.indexOf('~') < 0) {
       commitId = commitInfo.symbolicName;
+      return self.gitRepo.checkout(commitId, null, callback);
+    } else {
+      self.checkoutCommitCallback = callback;
+      $('#checkoutDialogCommitId').val(commitId);
+      self.main.hideLoading();
+      return $('#checkoutDialog').dialog('open');
     }
-    self.gitRepo.checkout(commitId, callback);
   });
+};
+
+GitLog.prototype.checkoutCommitWithBranchName = function () {
+  var commitId = $('#checkoutDialogCommitId').val();
+  var newBranchName = $('#checkoutDialogNewBranchName').val();
+  self.main.showLoading('Checking out...');
+  var callback = self.checkoutCommitCallback || this.main.hideLoadingAndShowError;
+  return self.gitRepo.checkout(commitId, newBranchName, callback);
 };
 
 GitLog.prototype.getSelectedRow = function () {
