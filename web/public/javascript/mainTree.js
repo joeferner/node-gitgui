@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function (layout, gitRepo) {
+module.exports = function(layout, gitRepo) {
   return new MainTree(layout, gitRepo);
 };
 
@@ -43,13 +43,13 @@ function MainTree(main, gitRepo) {
   this.jstree = jQuery.jstree._reference(this.tree);
 }
 
-MainTree.prototype.refresh = function (callback) {
-  callback = callback || function () {};
+MainTree.prototype.refresh = function(callback) {
+  callback = callback || function() {};
   this.jstree.refresh(-1);
   return callback(); // TODO: wait for refresh
 };
 
-MainTree.prototype.getTreeData = function (node, callback) {
+MainTree.prototype.getTreeData = function(node, callback) {
   if (node === -1) {
     return this.loadRoot(node, callback);
   }
@@ -70,9 +70,9 @@ MainTree.prototype.getTreeData = function (node, callback) {
   console.log('unhandled tree node', node.attr('id'));
 };
 
-MainTree.prototype.loadRoot = function (node, callback) {
+MainTree.prototype.loadRoot = function(node, callback) {
   var self = this;
-  setTimeout(function () {
+  setTimeout(function() {
     self.jstree.open_node($('#mainTreeBranches'), null, true);
     self.jstree.open_node($('#mainTreeTags'), null, true);
     self.jstree.open_node($('#mainTreeStashes'), null, true);
@@ -96,9 +96,9 @@ MainTree.prototype.loadRoot = function (node, callback) {
   ]);
 };
 
-MainTree.prototype.loadBranches = function (node, callback) {
+MainTree.prototype.loadBranches = function(node, callback) {
   var self = this;
-  this.gitRepo.getBranches(function (err, branches) {
+  this.gitRepo.getBranches(function(err, branches) {
     if (err) {
       return self.main.hideLoadingAndShowError(err);
     }
@@ -118,9 +118,9 @@ MainTree.prototype.loadBranches = function (node, callback) {
   }
 };
 
-MainTree.prototype.loadTags = function (node, callback) {
+MainTree.prototype.loadTags = function(node, callback) {
   var self = this;
-  this.gitRepo.getTags(function (err, tags) {
+  this.gitRepo.getTags(function(err, tags) {
     if (err) {
       return self.main.hideLoadingAndShowError(err);
     }
@@ -139,9 +139,9 @@ MainTree.prototype.loadTags = function (node, callback) {
   }
 };
 
-MainTree.prototype.loadStashes = function (node, callback) {
+MainTree.prototype.loadStashes = function(node, callback) {
   var self = this;
-  this.gitRepo.getStashes(function (err, stashes) {
+  this.gitRepo.getStashes(function(err, stashes) {
     if (err) {
       return self.main.hideLoadingAndShowError(err);
     }
@@ -160,7 +160,7 @@ MainTree.prototype.loadStashes = function (node, callback) {
   }
 };
 
-MainTree.prototype.onMainTreeContextMenu = function (node) {
+MainTree.prototype.onMainTreeContextMenu = function(node) {
   var nodeId = $(node).attr('id');
   if (nodeId.indexOf('mainTreeStash_') === 0) {
     return this.onMainTreeContextMenuStash(nodeId.substr('mainTreeStash_'.length));
@@ -171,14 +171,14 @@ MainTree.prototype.onMainTreeContextMenu = function (node) {
   }
 };
 
-MainTree.prototype.onMainTreeContextMenuBranch = function (branchId) {
+MainTree.prototype.onMainTreeContextMenuBranch = function(branchId) {
   var self = this;
   return {
     pop: {
       label: "Checkout",
-      action: function () {
+      action: function() {
         self.main.showLoading('Checking out ' + branchId + '...');
-        doCheckout(function () {
+        doCheckout(function() {
           self.main.hideLoading();
         })
       },
@@ -187,7 +187,7 @@ MainTree.prototype.onMainTreeContextMenuBranch = function (branchId) {
   };
 
   function doCheckout(callback) {
-    self.gitRepo.checkout(branchId, null, function (err) {
+    self.gitRepo.checkout(branchId, null, function(err) {
       if (err) {
         return callback(err);
       }
@@ -196,19 +196,19 @@ MainTree.prototype.onMainTreeContextMenuBranch = function (branchId) {
   }
 };
 
-MainTree.prototype.onMainTreeContextMenuStash = function (stashId) {
+MainTree.prototype.onMainTreeContextMenuStash = function(stashId) {
   var self = this;
   return {
     pop: {
       label: "Pop",
-      action: function () {
+      action: function() {
         return self.stashPop(stashId);
       },
       icon: "/image/stash-pop.png"
     },
     drop: {
       label: "Drop",
-      action: function () {
+      action: function() {
         var stashName = self.getStashNameById(stashId);
         if (self.main.confirm('Are you sure you want to delete this stash "' + stashName + '"?')) {
           return self.stashDrop(stashId);
@@ -219,13 +219,13 @@ MainTree.prototype.onMainTreeContextMenuStash = function (stashId) {
   };
 };
 
-MainTree.prototype.getStashNameById = function (stashId) {
+MainTree.prototype.getStashNameById = function(stashId) {
   return $('#mainTreeStash_' + stashId).text().trim();
 };
 
-MainTree.prototype.stashDrop = function (stashId) {
+MainTree.prototype.stashDrop = function(stashId) {
   var self = this;
-  this.gitRepo.stashDrop(stashId, function (err) {
+  this.gitRepo.stashDrop(stashId, function(err) {
     if (err) {
       return self.main.hideLoadingAndShowError(err);
     }
@@ -233,9 +233,9 @@ MainTree.prototype.stashDrop = function (stashId) {
   });
 };
 
-MainTree.prototype.stashPop = function (stashId) {
+MainTree.prototype.stashPop = function(stashId) {
   var self = this;
-  this.gitRepo.stashPop(stashId, function (err) {
+  this.gitRepo.stashPop(stashId, function(err) {
     if (err) {
       return self.main.hideLoadingAndShowError(err);
     }
