@@ -285,8 +285,6 @@ Layout.prototype.refreshStatus = function (callback) {
   var self = this;
   callback = callback || function () {};
   this.gitRepo.getStatus(function (err, status) {
-    positionCount('#toolbarPull', '#toolbarPullCount');
-    positionCount('#toolbarPush', '#toolbarPushCount');
     if (err) {
       $('#toolbarPullCount').html('?');
       $('#toolbarPullCount').show();
@@ -312,6 +310,8 @@ Layout.prototype.refreshStatus = function (callback) {
     }
 
     document.title = sf('{0}NodeGitGui - {1} ({2})', pendingPullsStr, self.gitRepo.repoPath, status.currentBranch);
+    positionCount('#toolbarPull', '#toolbarPullCount');
+    positionCount('#toolbarPush', '#toolbarPushCount');
 
     return callback();
   });

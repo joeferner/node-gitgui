@@ -20,31 +20,31 @@ function escapeHtml(str) {
     .replace(/>/g, '&gt;');
 }
 
-$(function () {
+$(function() {
   var repoPath = getRepoPath();
   document.title = 'NodeGitGui - ' + repoPath;
 
-  var main = {
+  var main = window.gitgutMain = {
     showError: showError,
     showMessage: showMessage,
     escapeHtml: escapeHtml
   };
 
-  main.hideLoadingAndShowError = function (err) {
+  main.hideLoadingAndShowError = function(err) {
     main.hideLoading();
     if (err) {
       return main.showError(err);
     }
   };
 
-  main.showLoading = function (message) {
+  main.showLoading = function(message) {
     message = message || 'Loading...';
     $('#loadingMessage').html(message);
     $('#loadingDialog').dialog('open');
     $('#loadingDialog').dialog('widget').find(".ui-dialog-titlebar").hide();
   };
 
-  main.hideLoading = function () {
+  main.hideLoading = function() {
     $('#loadingDialog').dialog('close');
   };
 
@@ -56,11 +56,11 @@ $(function () {
     resizable: false
   });
 
-  main.refresh = function (callback) {
+  main.refresh = function(callback) {
     main.layout.refresh(callback);
   };
 
-  main.confirm = function (message) {
+  main.confirm = function(message) {
     return window.confirm(message);
   };
 
@@ -73,7 +73,7 @@ $(function () {
 
   // the mainTree will already be loading so no need to call refresh on that
   main.showLoading();
-  main.gitLog.refresh(function () {
+  main.gitLog.refresh(function() {
     main.hideLoading();
   });
 });
