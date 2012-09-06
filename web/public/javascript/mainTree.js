@@ -205,8 +205,27 @@ MainTree.prototype.onMainTreeContextMenuStash = function (stashId) {
         return self.stashPop(stashId);
       },
       icon: "/image/stash-pop.png"
+    },
+    drop: {
+      label: "Drop",
+      action: function () {
+        if (self.main.confirm('Are you sure you want to delete this stash "' + stashId + '"?')) {
+          return self.stashDrop(stashId);
+        }
+      },
+      icon: "/image/context-delete.png"
     }
   };
+};
+
+MainTree.prototype.stashDrop = function (stashId) {
+  var self = this;
+  this.gitRepo.stashDrop(stashId, function (err) {
+    if (err) {
+      return self.main.hideLoadingAndShowError(err);
+    }
+    self.main.refresh();
+  });
 };
 
 MainTree.prototype.stashPop = function (stashId) {

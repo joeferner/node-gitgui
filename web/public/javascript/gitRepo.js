@@ -101,6 +101,13 @@ GitRepo.prototype.stashPop = function (stashId, callback) {
   }).error(this.ajaxError.bind(this, 'stashPop'));
 };
 
+GitRepo.prototype.stashDrop = function (stashId, callback) {
+  stashId = encodeURIComponent(stashId);
+  $.post(this.createUrl('/stash/' + stashId + '?action=drop'),function (data, textStatus) {
+    return callback(null, data);
+  }).error(this.ajaxError.bind(this, 'stashDrop'));
+};
+
 GitRepo.prototype.stash = function (stashName, callback) {
   var data = {
     name: stashName
