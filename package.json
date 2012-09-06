@@ -22,6 +22,7 @@
     "async": "~0.1.22",
     "stream-buffers": "~0.2.3",
     "openport": "0.0.3",
-    "which": "~1.0.5"
+    "which": "~1.0.5",
+    "less-middleware": "~0.1.5"
   }
 }
