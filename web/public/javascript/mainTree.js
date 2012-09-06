@@ -209,13 +209,18 @@ MainTree.prototype.onMainTreeContextMenuStash = function (stashId) {
     drop: {
       label: "Drop",
       action: function () {
-        if (self.main.confirm('Are you sure you want to delete this stash "' + stashId + '"?')) {
+        var stashName = self.getStashNameById(stashId);
+        if (self.main.confirm('Are you sure you want to delete this stash "' + stashName + '"?')) {
           return self.stashDrop(stashId);
         }
       },
       icon: "/image/context-delete.png"
     }
   };
+};
+
+MainTree.prototype.getStashNameById = function (stashId) {
+  return $('#mainTreeStash_' + stashId).text().trim();
 };
 
 MainTree.prototype.stashDrop = function (stashId) {
