@@ -210,9 +210,15 @@ MainTree.prototype.onMainTreeContextMenuStash = function(stashId) {
       label: "Drop",
       action: function() {
         var stashName = self.getStashNameById(stashId);
-        if (self.main.confirm('Are you sure you want to delete this stash "' + stashName + '"?')) {
-          return self.stashDrop(stashId);
-        }
+        self.main.confirm(
+          'Delete Stash?',
+          'Are you sure you want to delete this stash "' + stashName + '"?',
+          {},
+          function(result) {
+            if (result == 'YES') {
+              return self.stashDrop(stashId);
+            }
+          });
       },
       icon: "/image/context-delete.png"
     }

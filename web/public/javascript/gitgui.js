@@ -56,12 +56,44 @@ $(function() {
     resizable: false
   });
 
+  $('#confirmDialog').dialog({
+    autoOpen: false,
+    modal: true,
+    height: 'auto',
+    width: 'auto',
+    resizable: false,
+    closeOnEscape: true
+  });
+
   main.refresh = function(callback) {
     main.layout.refresh(callback);
   };
 
-  main.confirm = function(message) {
-    return window.confirm(message);
+  main.confirm = function(title, message, opts, callback) {
+    opts = opts || {};
+    callback = callback || function() {};
+
+    opts.buttons = opts.buttons || [
+      {
+        text: "Yes",
+        click: function() {
+          $("#confirmDialog").dialog('close');
+          return callback('YES');
+        }
+      },
+      {
+        text: "No",
+        click: function() {
+          $("#confirmDialog").dialog('close');
+          return callback('NO');
+        }
+      }
+    ];
+
+    $("#confirmDialog").dialog('option', 'title', title);
+    $('#confirmDialogMessage').html(message);
+    $("#confirmDialog").dialog('option', 'buttons', opts.buttons);
+    $("#confirmDialog").dialog('open');
   };
 
   main.gitRepo = require('../web/public/javascript/gitRepo')(main, repoPath);

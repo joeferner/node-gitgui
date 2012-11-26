@@ -50,9 +50,15 @@ FileView.prototype.showContextMenu = function(e) {
         label: 'Check Out',
         icon: '/image/context-checkout.png',
         action: function() {
-          if (self.main.confirm('Are you sure you want to checkout "' + selectedFileName.filename + '", your local changes will be lost?')) {
-            return self.checkoutLocalFile(selectedFileName.filename);
-          }
+          self.main.confirm(
+            'Checkout Local File?',
+            'Are you sure you want to checkout "' + selectedFileName.filename + '", your local changes will be lost?',
+            {},
+            function(result) {
+              if (result == 'YES') {
+                return self.checkoutLocalFile(selectedFileName.filename);
+              }
+            });
         }
       };
     }
@@ -61,9 +67,15 @@ FileView.prototype.showContextMenu = function(e) {
       label: 'Delete',
       icon: '/image/context-delete.png',
       action: function() {
-        if (self.main.confirm('Are you sure you want to delete "' + selectedFileName.filename + '"?')) {
-          return self.deleteLocalFile(selectedFileName.filename);
-        }
+        self.main.confirm(
+          'Delete Local File?',
+          'Are you sure you want to delete "' + selectedFileName.filename + '"?',
+          {},
+          function(result) {
+            if (result == 'YES') {
+              return self.deleteLocalFile(selectedFileName.filename);
+            }
+          });
       }
     };
   }
