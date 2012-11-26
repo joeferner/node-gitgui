@@ -10,6 +10,10 @@ var optimist = require('optimist');
 var args = optimist
   .alias('h', 'help')
   .alias('h', '?')
+  .options('repo', {
+    string: true,
+    describe: 'The path to the root of the repo.'
+  })
   .argv;
 
 if (args.help) {
@@ -17,7 +21,7 @@ if (args.help) {
   return process.exit(-1);
 }
 
-var repo = args._[0];
+var repo = args.repo || args._[0] || '.';
 
 openport.find(function (err, port) {
   require('../lib/app')({
