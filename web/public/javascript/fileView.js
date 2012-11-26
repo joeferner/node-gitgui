@@ -4,7 +4,7 @@ var sf = require('sf');
 var util = require("util");
 var events = require("events");
 
-module.exports = function (main, gitRepo, gitLog) {
+module.exports = function(main, gitRepo, gitLog) {
   return new FileView(main, gitRepo, gitLog);
 };
 
@@ -16,7 +16,7 @@ function FileView(main, gitRepo, gitLog) {
   this.gitLog = gitLog;
   this.commitId = null;
 
-  gitLog.on('logRowSelected', function (data) {
+  gitLog.on('logRowSelected', function(data) {
     self.refresh();
   });
   $('#fileView').dataTable({
@@ -34,7 +34,7 @@ function FileView(main, gitRepo, gitLog) {
 }
 util.inherits(FileView, events.EventEmitter);
 
-FileView.prototype.showContextMenu = function (e) {
+FileView.prototype.showContextMenu = function(e) {
   var self = this;
   e.preventDefault();
   $(e.target).click();
@@ -43,11 +43,24 @@ FileView.prototype.showContextMenu = function (e) {
   };
   var selectedLogRow = self.gitLog.getSelectedRow();
   if (selectedLogRow && !selectedLogRow.id) {
-    menu.stage = {
+    var selectedFileName = self.getSelectedFilename();
+
+    if (selectedFileName.action == 'M') {
+      menu.checkout = {
+        label: 'Check Out',
+        icon: '/image/context-checkout.png',
+        action: function() {
+          if (self.main.confirm('Are you sure you want to checkout "' + selectedFileName.filename + '", your local changes will be lost?')) {
+            return self.checkoutLocalFile(selectedFileName.filename);
+          }
+        }
+      };
+    }
+
+    menu.delete = {
       label: 'Delete',
       icon: '/image/context-delete.png',
-      action: function () {
-        var selectedFileName = self.getSelectedFilename();
+      action: function() {
         if (self.main.confirm('Are you sure you want to delete "' + selectedFileName.filename + '"?')) {
           return self.deleteLocalFile(selectedFileName.filename);
         }
@@ -61,19 +74,34 @@ FileView.prototype.showContextMenu = function (e) {
   return false;
 };
 
-FileView.prototype.deleteLocalFile = function (filename, callback) {
+FileView.prototype.deleteLocalFile = function(filename, callback) {
   var self = this;
   callback = callback || this.main.hideLoadingAndShowError;
-  this.gitRepo.deleteLocalFile(filename, function (err) {
+  this.gitRepo.deleteLocalFile(filename, function(err) {
     if (err) {
       return callback(err);
     }
-    self.main.refresh();
+    self.refresh();
+    // todo: if this is the last file we need to refresh the log as well
     return callback();
   });
 };
 
-FileView.prototype.getSelectedFilename = function () {
+FileView.prototype.checkoutLocalFile = function(filename, callback) {
+  var self = this;
+  callback = callback || this.main.hideLoadingAndShowError;
+  this.gitRepo.checkoutLocalFile(filename, function(err) {
+    console.log('checkoutLocalFile complete: ', filename);
+    if (err) {
+      return callback(err);
+    }
+    self.refresh();
+    // todo: if this is the last file we need to refresh the log as well
+    return callback();
+  });
+};
+
+FileView.prototype.getSelectedFilename = function() {
   var row = this.filesTable.$('tr.row_selected').get(0);
   var data = this.filesTable.fnGetData(row);
   if (!data) {
@@ -86,14 +114,14 @@ FileView.prototype.getSelectedFilename = function () {
   };
 };
 
-FileView.prototype.refresh = function (callback) {
+FileView.prototype.refresh = function(callback) {
   var self = this;
   callback = callback || this.main.hideLoadingAndShowError;
   var row = this.gitLog.getSelectedRow();
   this.filesTable.fnClearTable();
 
   this.commitId = row.id;
-  this.gitRepo.getCommitInfo(row.id || 'workingCopy', function (err, commitInfo) {
+  this.gitRepo.getCommitInfo(row.id || 'workingCopy', function(err, commitInfo) {
     if (err) {
       return callback(err);
     }
@@ -108,10 +136,10 @@ FileView.prototype.refresh = function (callback) {
       commitInfoHtml += '<div class="commitInfo-field"><span class="commitInfo-fieldTitle">Date:</span> ' + dateStr + '</div>';
     }
 
-    (commitInfo.parents || []).forEach(function (parentId) {
+    (commitInfo.parents || []).forEach(function(parentId) {
       commitInfoHtml += '<div class="commitInfo-field"><span class="commitInfo-fieldTitle">Parent:</span> ' + parentId + '</div>';
     });
-    (commitInfo.children || []).forEach(function (childId) {
+    (commitInfo.children || []).forEach(function(childId) {
       commitInfoHtml += '<div class="commitInfo-field"><span class="commitInfo-fieldTitle">Child:</span> ' + childId + '</div>';
     });
 
@@ -126,7 +154,7 @@ FileView.prototype.refresh = function (callback) {
     }
     self.filesTable.fnAddData(fileRows);
 
-    $("#fileView tbody tr").click(function (e) {
+    $("#fileView tbody tr").click(function(e) {
       self.filesTable.$('tr.row_selected').removeClass('row_selected');
       $(this).addClass('row_selected');
       self.emit('fileSelected', {
@@ -148,7 +176,7 @@ FileView.prototype.refresh = function (callback) {
     var isStaged = data[1] === 'Y';
     var newValue = isStaged ? 'N' : 'Y';
     var fnName = isStaged ? 'reset' : 'stage';
-    self.gitRepo[fnName](filename, function (err) {
+    self.gitRepo[fnName](filename, function(err) {
       if (err) {
         return self.main.hideLoadingAndShowError(err);
       }
