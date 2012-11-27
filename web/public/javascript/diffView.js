@@ -3,7 +3,7 @@
 var sf = require('sf');
 var diffParse = require("../lib/diffParse");
 
-module.exports = function (main, gitRepo, fileView) {
+module.exports = function(main, gitRepo, fileView) {
   return new DiffView(main, gitRepo, fileView);
 };
 
@@ -13,12 +13,12 @@ function DiffView(main, gitRepo, fileView) {
   this.gitRepo = gitRepo;
   this.fileView = fileView;
 
-  fileView.on('fileSelected', function (data) {
+  fileView.on('fileSelected', function(data) {
     self.refresh();
   });
 }
 
-DiffView.prototype.refresh = function (callback) {
+DiffView.prototype.refresh = function(callback) {
   var self = this;
   $('#diff').parent().scrollTop(0);
   callback = callback || self.main.hideLoadingAndShowError;
@@ -29,7 +29,10 @@ DiffView.prototype.refresh = function (callback) {
     return callback();
   }
 
-  if (isImageFilename(row.filename)) {
+  if (isBinaryFilename(row.filename)) {
+    $('#diff').html("Binary File: " + row.filename);
+    return callback();
+  } else if (isImageFilename(row.filename)) {
     var fname = encodeURIComponent(row.filename);
     $('#diff').html(sf('<img src="/raw/{0}/{1}?repo={2}" />', commitId || 'workingCopy', fname, encodeURIComponent(this.gitRepo.repoPath)));
     return callback();
@@ -37,7 +40,7 @@ DiffView.prototype.refresh = function (callback) {
     $('#diff').html('Directory');
     return callback();
   } else {
-    this.gitRepo.getDiff(commitId, row.filename, function (err, diff) {
+    this.gitRepo.getDiff(commitId, row.filename, function(err, diff) {
       if (err) {
         return callback(err);
       }
@@ -50,6 +53,13 @@ DiffView.prototype.refresh = function (callback) {
       }
       return callback();
     });
+  }
+
+  function isBinaryFilename(filename) {
+    if (!filename) {
+      return false;
+    }
+    return filename.match(/\.bin/) || filename.match(/\.zip$/) || filename.match(/\.exe$/) || filename.match(/\.jar$/) || filename.match(/\.dat$/);
   }
 
   function isImageFilename(filename) {
@@ -67,7 +77,7 @@ DiffView.prototype.refresh = function (callback) {
 
     var lastCollapsed = false;
     var collapsedSectionIdIdx = 0;
-    lines.forEach(function (l, lineIdx) {
+    lines.forEach(function(l, lineIdx) {
       var addSubtractCss;
       if (l.action === '+') {
         addSubtractCss = 'diff-add';
@@ -142,7 +152,7 @@ DiffView.prototype.refresh = function (callback) {
   }
 };
 
-window.showCollapsedSection = function (id) {
+window.showCollapsedSection = function(id) {
   $('#' + id + ' tr').insertAfter($('#' + id).parent().parent());
   $('#' + id).parent().parent().slideUp();
 };
