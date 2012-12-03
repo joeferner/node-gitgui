@@ -21,7 +21,8 @@ if (args.help) {
   return process.exit(-1);
 }
 
-var repo = args.repo || args._[0] || '.';
+var repo = path.resolve(args.repo || args._[0] || '.');
+console.log("Using repo", repo);
 
 openport.find(function (err, port) {
   require('../lib/app')({
