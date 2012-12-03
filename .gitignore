@@ -6,4 +6,3 @@ node_modules
 .lock*
 npm-debug.log
 .idea
-web/public/css/gitgui.css

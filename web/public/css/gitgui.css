@@ -1,0 +1,135 @@
+.ui-layout-north {
+  overflow: hidden !important;
+  border: 0 !important;
+}
+#gitLog {
+  table-layout: fixed;
+}
+#gitLog tbody tr {
+  cursor: pointer;
+}
+#gitLog tbody tr td {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+#gitLog tbody tr td .message {
+  display: inline-block;
+  margin-top: 3px;
+  margin-bottom: 3px;
+  padding-left: 4px;
+}
+#gitLog tbody .fileView-column-graph svg {
+  position: absolute;
+}
+#gitLog tbody {
+  font-size: 10pt;
+}
+.gitLog-currentCommit {
+  font-weight: bold;
+}
+.commitInfo-fieldTitle {
+  font-weight: bold;
+}
+.commitInfo-message {
+  margin-left: 10px;
+  margin-bottom: 10px;
+}
+#fileView tbody tr {
+  cursor: pointer;
+}
+#fileView tbody {
+  font-size: 10pt;
+}
+.branch-current {
+  font-weight: bold;
+}
+.diff {
+  font-family: monospace;
+}
+#diff tbody {
+  font-size: 10pt;
+}
+.diff-add {
+  background-color: #c1ffc2;
+}
+.diff-subtract {
+  background-color: #ff8784;
+}
+.diff-noChange .diff-fromLineNumber,
+.diff-noChange .diff-toLineNumber {
+  background-color: #eaeaea;
+}
+.dialog-field-title {
+  font-weight: bold;
+}
+.ref {
+  display: inline-block;
+  background-color: #fffbb5;
+  padding: 2px 2px 2px 20px;
+  border-radius: 5px;
+  border: 1px solid #ccc888;
+  background-repeat: no-repeat;
+  background-position: 2px 50%;
+}
+.ref-tag {
+  background-image: url('/image/ref-tag.png');
+}
+.ref-head {
+  background-image: url('/image/ref-head.png');
+}
+.ref-remote {
+  background-image: url('/image/ref-remote.png');
+}
+.fileView-column-graph,
+.fileView-column-message,
+.fileView-column-date,
+.fileView-column-committer,
+.fileView-column-commitId {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.statusCount {
+  display: none;
+  position: absolute;
+  padding: 0px 2px 0px 2px;
+  color: #ffffff;
+  background-color: #ff0000;
+  border: 1px solid #990000;
+  border-radius: 5px;
+}
+.collapsedSection {
+  background-color: #97dbff;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  cursor: pointer;
+}
+.collapsedSection-start {
+  border-bottom: 1px solid black;
+  -webkit-box-shadow: inset 0px -10px 15px rgba(50, 50, 50, 0.2);
+  -moz-box-shadow: inset 0px -10px 15px rgba(50, 50, 50, 0.2);
+  box-shadow: inset 0px -10px 15px rgba(50, 50, 50, 0.2);
+}
+.collapsedSection-end {
+  border-top: 1px solid black;
+  -webkit-box-shadow: inset 0px 10px 15px rgba(50, 50, 50, 0.2);
+  -moz-box-shadow: inset 0px 10px 15px rgba(50, 50, 50, 0.2);
+  box-shadow: inset 0px 10px 15px rgba(50, 50, 50, 0.2);
+}
+.collapsedSection-middle {
+  border-bottom: 1px solid black;
+  border-top: 1px solid black;
+  -webkit-box-shadow: inset 0px -10px 15px rgba(50, 50, 50, 0.2), inset 0px 10px 15px rgba(50, 50, 50, 0.2);
+  -moz-box-shadow: inset 0px -10px 15px rgba(50, 50, 50, 0.2), inset 0px 10px 15px rgba(50, 50, 50, 0.2);
+  box-shadow: inset 0px -10px 15px rgba(50, 50, 50, 0.2), inset 0px 10px 15px rgba(50, 50, 50, 0.2);
+}
+#loadingDialog {
+  min-height: inherit !important;
+}
+#loadingDialog img {
+  vertical-align: middle;
+}
+#loadingMessage {
+  margin-left: 10px;
+  vertical-align: middle;
+}
