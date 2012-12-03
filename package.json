@@ -25,5 +25,8 @@
     "which": "~1.0.5",
     "less-middleware": "~0.1.5",
     "appjs": "0.0.20"
+  },
+  "bin": {
+    "gitgui": "./app"
   }
 }
