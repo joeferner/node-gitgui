@@ -24,7 +24,6 @@
     "openport": "0.0.3",
     "which": "~1.0.5",
     "less-middleware": "~0.1.5",
-    "appjs-linux-ia32": "0.0.19",
     "appjs": "0.0.20"
   }
 }
